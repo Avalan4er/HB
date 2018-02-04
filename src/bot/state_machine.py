@@ -68,15 +68,16 @@ class BotController(object):
 
     def state_waiting_match_on_enter(self):
         self.hots_menu.wait_for_match()
+        time.sleep(1)
 
     def state_loading_on_enter(self):
         logging.debug('Грузимся в игру')
         self.game_map = self.hots_loading_screen.detect_map()
         self.hots_loading_screen.wait_for_loading()
+        self.game_side = self.hots_game_screen.detect_side()
 
     def state_initiating_game_on_enter(self):
         logging.debug('Инициализируем игру')
-        self.game_side = self.hots_game_screen.detect_side()
 
     def state_playing_on_enter(self):
         logging.debug('Играем')

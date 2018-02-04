@@ -1,7 +1,6 @@
 import logging
 import state_machine
 
-
 def main():
     bot = state_machine.BotController()
     bot.start_game()

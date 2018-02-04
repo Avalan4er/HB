@@ -3,3 +3,4 @@ Pillow
 pyautogui
 transitions
 pyperclip
+opencv-python

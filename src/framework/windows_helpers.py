@@ -5,7 +5,6 @@ import time
 import config
 import random
 
-
 class Color(object):
     def to_rgb(self, hex):
         return tuple(int(hex[i:i + 2], 16) for i in (0, 2, 4))
@@ -16,7 +15,7 @@ class Emulator(object):
         random.seed(42)
 
     def click(self, x, y):
-        pyautogui.moveTo(x, y, random.random(), pyautogui.easeInBounce)
+        pyautogui.moveTo(x, y, random.random(), pyautogui.easeOutQuad)
         pyautogui.click()
 
     def write(self, word):
@@ -42,6 +41,9 @@ class Pixel(object):
 
     def color(self, x, y):
         return pyautogui.pixel(x, y)
+
+    def screen(self):
+        return pyautogui.grab()
 
 
 def get_resource_path(filename):

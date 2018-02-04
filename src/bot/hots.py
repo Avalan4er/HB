@@ -1,8 +1,8 @@
 import logging
 import time
-import constants
 import windows_helpers
 import pyperclip
+import constants
 
 class MainMenu(object):
     def __init__(self):
@@ -67,14 +67,14 @@ class LoadingScreen(object):
         self.pixel = windows_helpers.Pixel()
 
     def detect_map(self):
-        color_converter = windows_helpers.Color()
         logging.debug('Определяю карту')
-        for map_name, color in constants.MAP_COLORS.items():
-            if self.pixel.search(380, 380, 10, 10, color_converter.to_rgb(color), 1):
-                logging.debug('Ката определена: ' + map_name)
+
+        current_color = self.pixel.color(0, 0)
+        for map_name, color in constants.MAP_COLORS:
+            if color == current_color:
+                logging.debug('Карта обнаружена: ' + map_name)
                 return map_name
-            else:
-                logging.debug('Это не ' + map_name)
+
         logging.debug('Карта не определена')
 
     def wait_for_loading(self):
@@ -84,17 +84,19 @@ class LoadingScreen(object):
             time.sleep(1)
         logging.debug('Загрузка окончена')
 
+    def detect_side(self):
+        logging.debug('Определяю сторону')
+
+        side = 'right_side'
+        if self.pixel.matches(3, 285, (8, 88, 229)):
+            side = 'left_side'
+
+        logging.debug('Сторона определена: ' + side)
+        return side
+
 
 class GameScreen(object):
     def __init__(self):
         self.pixel = windows_helpers.Pixel()
 
-    def detect_side(self):
-        logging.debug('Определяю сторону')
 
-        side = 'right_side'
-        if self.pixel.search(7, 161, 11, 217, (79, 191, 251), 10):
-            side = 'left_side'
-
-        logging.debug('Сторона определена: ' + side)
-        return side
