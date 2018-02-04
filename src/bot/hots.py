@@ -23,16 +23,15 @@ class MainMenu(object):
 
     def select_hero(self, hero_name):
         logging.debug('Выбираю героя ' + hero_name)
-        self.emulator.click(950, 500)
-        self.emulator.click(1420, 165)
+        self.emulator.click(950, 500)  # клик по герою для открытия меню выбора героя
+        self.emulator.click(1420, 165)  # клик по полю ввода поиска героя
 
-        pyperclip.copy(hero_name)
-        self.emulator.paste()
+        time.sleep(0.5)
+        pyperclip.copy(hero_name)  # копируем в буффер обмена имя героя
+        time.sleep(0.5)
+        self.emulator.paste()  # вставляем в поле поиска
 
-        #  hero_keys = constants.HEROES_CODES[hero_name]
-        #  self.emulator.press_key(hero_keys)
-
-        self.emulator.click(337, 267)
+        self.emulator.click(337, 267)  # кликаем по первому из найденных героев
 
     def select_ai_level(self, level):
         logging.debug('Устанавливаю сложность ботов' + level)

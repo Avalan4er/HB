@@ -12,18 +12,22 @@ class Color(object):
 
 
 class Emulator(object):
+    def __init__(self):
+        random.seed(42)
+
     def click(self, x, y):
-        pyautogui.moveTo(x, y, random.randint())
+        pyautogui.moveTo(x, y, random.random(), pyautogui.easeInBounce)
         pyautogui.click()
 
     def write(self, word):
-        pyautogui.typewrite(word, 0.5)
+        pyautogui.typewrite(word, random.random())
 
     def press_key(self, keys):
-        pyautogui.press(keys)
+        pyautogui.press(keys, interval=random.random())
 
     def paste(self):
         pyautogui.hotkey('ctrl', 'v')
+
 
 class Pixel(object):
     def search(self, x, y, width, height, rgb_color, tolerance=0):
