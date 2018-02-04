@@ -1,0 +1,5 @@
+opencv_python
+Pillow
+pyautogui
+transitions
+pyperclip
