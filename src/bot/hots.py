@@ -99,4 +99,9 @@ class GameScreen(object):
     def __init__(self):
         self.pixel = windows_helpers.Pixel()
 
+    #def detect_hero_position(self):
+
+    #def detect_enemy_heroes(self):
+
+    #def detect_enemy_creeps(self):
 

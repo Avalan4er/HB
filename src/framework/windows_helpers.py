@@ -5,6 +5,7 @@ import time
 import config
 import random
 
+
 class Color(object):
     def to_rgb(self, hex):
         return tuple(int(hex[i:i + 2], 16) for i in (0, 2, 4))
