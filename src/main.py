@@ -1,15 +1,18 @@
 import logging
 import state_machine
 
+
 def main():
-    bot = state_machine.BotController()
-    bot.start_game()
-    bot.switch_game_state()
-    bot.select_game_mode()
-    bot.select_hero()
-    bot.start_game()
-    bot.wait_for_match()
-    bot.initiate_game()
+    application = state_machine.Application()
+    application.run()
+
+    game = state_machine.Game()
+    game.switch_game_state()
+    game.select_game_mode()
+    game.select_hero()
+    game.start_game()
+    game.wait_for_match()
+    game.initiate_game()
 
 
 if __name__ == '__main__':

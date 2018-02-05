@@ -70,7 +70,7 @@ class LoadingScreen(object):
         logging.debug('Определяю карту')
 
         current_color = self.pixel.color(0, 0)
-        for map_name, color in constants.MAP_COLORS:
+        for map_name, color in constants.MAP_COLORS.items():
             if color == current_color:
                 logging.debug('Карта обнаружена: ' + map_name)
                 return map_name
