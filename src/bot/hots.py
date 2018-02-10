@@ -3,6 +3,8 @@ import time
 import windows_helpers
 import pyperclip
 import constants
+import vision_helpers
+
 
 class MainMenu(object):
     def __init__(self):
@@ -54,7 +56,7 @@ class MainMenu(object):
         logging.debug('Ожидаю начала матча')
         loading_started = False
         while not loading_started:
-            time.sleep(1)
+            time.sleep(0.5)
             loading_started = self.pixel.matches(900, 500, (10, 10, 10), 10)
             logging.debug('Проверка начала игры: ' + loading_started.__str__())
 
@@ -98,10 +100,32 @@ class LoadingScreen(object):
 class GameScreen(object):
     def __init__(self):
         self.pixel = windows_helpers.Pixel()
+        self.emulator = windows_helpers.Emulator()
 
-    #def detect_hero_position(self):
+    def detect_enemy_creep(self):
+        logging.debug('Ищу крипа')
+        screenshot = self.pixel.screen()
 
-    #def detect_enemy_heroes(self):
+        creep_coords = vision_helpers.find_closest_enemy_creep(screenshot)
 
-    #def detect_enemy_creeps(self):
+        if creep_coords is not None:
+            logging.debug('Крип найден')
+            return EnemyCreep(creep_coords[0], creep_coords[1])
 
+        logging.debug('Крип не найден')
+
+    def move_forward(self, side):
+        logging.debug('Двигаюсь')
+        if side == 'right_side':
+            self.emulator.right_click(640, 500)
+        else:
+            self.emulator.right_click(800, 500)
+
+    def attack(self, creep):
+        logging.debug('Атакую крипа')
+        self.emulator.right_click(creep.x + 30, creep.y + 50)
+
+class EnemyCreep(object):
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y

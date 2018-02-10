@@ -19,6 +19,10 @@ class Emulator(object):
         pyautogui.moveTo(x, y, random.random(), pyautogui.easeOutQuad)
         pyautogui.click()
 
+    def right_click(self, x, y):
+        pyautogui.moveTo(x, y, random.random(), pyautogui.easeOutQuad)
+        pyautogui.rightClick()
+
     def write(self, word):
         pyautogui.typewrite(word, random.random())
 
@@ -27,6 +31,10 @@ class Emulator(object):
 
     def paste(self):
         pyautogui.hotkey('ctrl', 'v')
+
+    def wait_random_delay(self):
+        delay = 1.0 + random.random() * 4.0
+        time.sleep(delay)
 
 
 class Pixel(object):

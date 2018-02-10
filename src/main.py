@@ -18,9 +18,4 @@ def main():
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG, format='%(asctime)s.%(msecs)03d: %(message)s', datefmt='%H:%M:%S')
     # logging.disable(logging.DEBUG) # uncomment to block debug log messages
-    #  main()
-    import vision_helpers
-    import cv2
-
-    image = cv2.imread('testimage.jpg')
-    vision_helpers.find_red_creeps(image)
+    main()

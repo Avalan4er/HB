@@ -5,13 +5,14 @@ import logging
 import hots
 import config
 import constants
-
+import random
 
 class Application(object):
     def __init__(self):
+        random.seed(39)
         states = [
             State(name='not_running'),
-            State(name='running', on_enter=[self.state_running_on_enter.__name__()])
+            State(name='running', on_enter=['state_running_on_enter'])
         ]
         transitions = [
             {'trigger': 'run', 'source': 'not_running', 'dest': 'running'}
@@ -54,6 +55,7 @@ class Game(object):
         self.hots_menu = hots.MainMenu()
         self.hots_loading_screen = hots.LoadingScreen()
         self.hots_game_screen = hots.GameScreen()
+        self.emulator = windows_helpers.Emulator()
 
         self.game_map = 'none'
         self.game_side = 'none'
@@ -62,29 +64,42 @@ class Game(object):
 
     def state_main_menu_on_enter(self):
         self.hots_menu.open_play_panel()
-        time.sleep(1)
+        self.emulator.wait_random_delay()
         self.hots_menu.open_vs_ai_panel()
-        time.sleep(1)
+        self.emulator.wait_random_delay()
 
     def state_selecting_game_mode_on_enter(self):
         self.hots_menu.select_alies_ai_mode()
-        time.sleep(1)
+        self.emulator.wait_random_delay()
         self.hots_menu.select_ai_level(config.AI_LEVEL)
-        time.sleep(1)
+        self.emulator.wait_random_delay()
 
     def state_selecting_hero_on_enter(self):
         self.hots_menu.select_hero(config.HERO_TO_LEVEL)
+        self.emulator.wait_random_delay()
         self.hots_menu.start_game()
 
     def state_waiting_match_on_enter(self):
         self.hots_menu.wait_for_match()
-        time.sleep(1)
+        time.sleep(2)
 
     def state_loading_on_enter(self):
         logging.debug('Грузимся в игру')
         self.game_map = self.hots_loading_screen.detect_map()
         self.hots_loading_screen.wait_for_loading()
-        self.game_side = self.hots_game_screen.detect_side()
+        self.game_side = self.hots_loading_screen.detect_side()
 
     def state_initiating_game_on_enter(self):
-        logging.debug('Инициализируем игру')
+        game_finished = False
+
+        while not game_finished:
+            # searching for target to attack
+            creep = self.hots_game_screen.detect_enemy_creep()
+
+            # moving or attacking creep
+            if creep is None:
+                self.hots_game_screen.move_forward(self.game_side)
+                self.emulator.wait_random_delay()
+            else:
+                self.hots_game_screen.attack(creep)
+                time.sleep(5)
