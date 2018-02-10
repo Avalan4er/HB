@@ -4,6 +4,7 @@ import windows_helpers
 import pyperclip
 import constants
 import vision_helpers
+import os
 
 
 class MainMenu(object):
@@ -71,9 +72,9 @@ class LoadingScreen(object):
     def detect_map(self):
         logging.debug('Определяю карту')
 
-        current_color = self.pixel.color(0, 0)
-        for map_name, color in constants.MAP_COLORS.items():
-            if color == current_color:
+        screenshot = self.pixel.screen()
+        for map_name, map_path in constants.MAP_COLORS.items():
+            if vision_helpers.screenshot_contains_template(screenshot, os.path.join(constants.LOADING_SCREEN_TEMPLATES_PATH, map_path + '.png')):
                 logging.debug('Карта обнаружена: ' + map_name)
                 return map_name
 

@@ -1,18 +1,22 @@
+import os
+
 WAIT_BEFORE_GAME_STARTS = 30
+
+LOADING_SCREEN_TEMPLATES_PATH = os.path.join('resources', 'img', 'loading_screen')
 MAP_COLORS = {
-    'Hanamura': (20, 21, 39),
-    'TowersOfDoom': (8, 15, 26),
-    'BraxisHoldout': (8, 12, 22),
-    'BlackheartsBay': (7, 11, 15),
-    'BattlefieldOfEternity': (55, 45, 40),
-    'SpiderQueen': (9, 11, 31),
-    'DragonShire': (10, 11, 17),
-    'SkyTemple': (20, 18, 23),
-    'InfernalShrines': (16, 13, 18),
-    'HauntedMines': (11, 10, 16),
-    'CursedHollow': (10, 7, 18),
-    'GardenOfTerror': (4, 14, 26),
-    'WarheadJunction': (17, 12, 17),
-    'VolskayaFoundry': (8, 8, 20)
+    'Hanamura': 'hanamura',
+    'TowersOfDoom': 'towers_of_doom',
+    'BraxisHoldout': 'braxis_holdout',
+    'BlackheartsBay': 'blackhearts_bay',
+    'BattlefieldOfEternity': 'battlefield_of_eternity',
+    'SpiderQueen': 'spider_queen',
+    'DragonShire': 'dragon_shire',
+    'SkyTemple': 'sky_temple',
+    'InfernalShrines': 'infernal_shrines',
+    'HauntedMines': 'haunted_mines',
+    'CursedHollow': 'cursed_hollow',
+    'GardenOfTerror': 'garden_of_terror',
+    'WarheadJunction': 'warhead_junction',
+    'VolskayaFoundry': 'volskaya_foundry',
 }
 
