@@ -73,8 +73,12 @@ class LoadingScreen(object):
         logging.debug('Определяю карту')
 
         screenshot = self.pixel.screen()
+        width = screenshot.width
+
         for map_name, map_path in constants.MAP_COLORS.items():
-            if vision_helpers.screenshot_contains_template(screenshot, os.path.join(constants.LOADING_SCREEN_TEMPLATES_PATH, map_path + '.png')):
+            if vision_helpers.screenshot_contains_template(
+                    screenshot.crop(0, 0, width, 300),
+                    os.path.join(constants.LOADING_SCREEN_TEMPLATES_PATH, map_path + '.png')):
                 logging.debug('Карта обнаружена: ' + map_name)
                 return map_name
 

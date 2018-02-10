@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="9dc5ed4c-d28a-436f-8216-cc47ec18c74d" name="Default" comment="Detecting map via template matching">
+    <list default="true" id="9dc5ed4c-d28a-436f-8216-cc47ec18c74d" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change beforePath="$PROJECT_DIR$/src/bot/hots.py" afterPath="$PROJECT_DIR$/src/bot/hots.py" />
-      <change beforePath="$PROJECT_DIR$/src/bot/state_machine.py" afterPath="$PROJECT_DIR$/src/bot/state_machine.py" />
       <change beforePath="$PROJECT_DIR$/src/framework/vision_helpers.py" afterPath="$PROJECT_DIR$/src/framework/vision_helpers.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -29,8 +28,8 @@
       <file leaf-file-name="vision_helpers.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/framework/vision_helpers.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="291">
-              <caret line="28" column="38" lean-forward="false" selection-start-line="28" selection-start-column="38" selection-end-line="28" selection-end-column="38" />
+            <state relative-caret-position="251">
+              <caret line="26" column="32" lean-forward="false" selection-start-line="26" selection-start-column="4" selection-end-line="26" selection-end-column="32" />
               <folding>
                 <element signature="e#0#10#0" expanded="true" />
               </folding>
@@ -38,10 +37,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="state_machine.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="state_machine.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/bot/state_machine.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="319">
+            <state relative-caret-position="499">
               <caret line="87" column="56" lean-forward="false" selection-start-line="87" selection-start-column="56" selection-end-line="87" selection-end-column="56" />
               <folding>
                 <element signature="e#0#38#0" expanded="true" />
@@ -50,11 +49,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="hots.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="hots.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/bot/hots.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="260">
-              <caret line="106" column="34" lean-forward="true" selection-start-line="106" selection-start-column="34" selection-end-line="106" selection-end-column="34" />
+            <state relative-caret-position="240">
+              <caret line="84" column="44" lean-forward="true" selection-start-line="84" selection-start-column="44" selection-end-line="84" selection-end-column="44" />
               <folding>
                 <element signature="e#0#14#0" expanded="true" />
               </folding>
@@ -117,9 +116,9 @@
         <option value="$PROJECT_DIR$/src/framework/windows_helpers.py" />
         <option value="$PROJECT_DIR$/src/main.py" />
         <option value="$PROJECT_DIR$/src/configuration/constants.py" />
-        <option value="$PROJECT_DIR$/src/bot/hots.py" />
-        <option value="$PROJECT_DIR$/src/framework/vision_helpers.py" />
         <option value="$PROJECT_DIR$/src/bot/state_machine.py" />
+        <option value="$PROJECT_DIR$/src/framework/vision_helpers.py" />
+        <option value="$PROJECT_DIR$/src/bot/hots.py" />
       </list>
     </option>
   </component>
@@ -321,7 +320,14 @@
       <option name="project" value="LOCAL" />
       <updated>1518286044896</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="Side detection fix&#10;Increased performance of map detection">
+      <created>1518286908889</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1518286908889</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -356,7 +362,8 @@
     <MESSAGE value="Refactor state machines and few fixes" />
     <MESSAGE value="We can play! (awfully)" />
     <MESSAGE value="Detecting map via template matching" />
-    <option name="LAST_COMMIT_MESSAGE" value="Detecting map via template matching" />
+    <MESSAGE value="Side detection fix&#10;Increased performance of map detection" />
+    <option name="LAST_COMMIT_MESSAGE" value="Side detection fix&#10;Increased performance of map detection" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -710,16 +717,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/framework/vision_helpers.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="291">
-          <caret line="28" column="38" lean-forward="false" selection-start-line="28" selection-start-column="38" selection-end-line="28" selection-end-column="38" />
-          <folding>
-            <element signature="e#0#10#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="171">
@@ -728,12 +725,30 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/bot/hots.py">
+    <entry file="file://$PROJECT_DIR$/src/configuration/constants.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="260">
-          <caret line="106" column="34" lean-forward="true" selection-start-line="106" selection-start-column="34" selection-end-line="106" selection-end-column="34" />
+        <state relative-caret-position="80">
+          <caret line="4" column="81" lean-forward="false" selection-start-line="4" selection-start-column="81" selection-end-line="4" selection-end-column="81" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/framework/vision_helpers.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="251">
+          <caret line="26" column="32" lean-forward="false" selection-start-line="26" selection-start-column="4" selection-end-line="26" selection-end-column="32" />
           <folding>
-            <element signature="e#0#14#0" expanded="true" />
+            <element signature="e#0#10#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/bot/state_machine.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="499">
+          <caret line="87" column="56" lean-forward="false" selection-start-line="87" selection-start-column="56" selection-end-line="87" selection-end-column="56" />
+          <folding>
+            <element signature="e#0#38#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -748,20 +763,12 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/configuration/constants.py">
+    <entry file="file://$PROJECT_DIR$/src/bot/hots.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="80">
-          <caret line="4" column="81" lean-forward="false" selection-start-line="4" selection-start-column="81" selection-end-line="4" selection-end-column="81" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/bot/state_machine.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="319">
-          <caret line="87" column="56" lean-forward="false" selection-start-line="87" selection-start-column="56" selection-end-line="87" selection-end-column="56" />
+        <state relative-caret-position="240">
+          <caret line="84" column="44" lean-forward="true" selection-start-line="84" selection-start-column="44" selection-end-line="84" selection-end-column="44" />
           <folding>
-            <element signature="e#0#38#0" expanded="true" />
+            <element signature="e#0#14#0" expanded="true" />
           </folding>
         </state>
       </provider>
