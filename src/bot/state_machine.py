@@ -6,6 +6,8 @@ import hots
 import config
 import constants
 import random
+from datetime import datetime
+
 
 class Application(object):
     def __init__(self):
@@ -41,6 +43,7 @@ class Game(object):
             State(name='waiting_match', on_enter=['state_waiting_match_on_enter']),
             State(name='loading', on_enter=['state_loading_on_enter']),
             State(name='initiating_game', on_enter=['state_initiating_game_on_enter']),
+            State(name='playing', on_enter=['state_playing_on_enter'])
         ]
         transitions = [
             {'trigger': 'switch_game_state', 'source': 'idle', 'dest': 'main_menu'},
@@ -48,8 +51,8 @@ class Game(object):
             {'trigger': 'select_hero', 'source': 'selecting_game_mode', 'dest': 'selecting_hero'},
             {'trigger': 'start_game', 'source': 'selecting_hero', 'dest': 'waiting_match'},
             {'trigger': 'wait_for_match', 'source': 'waiting_match', 'dest': 'loading'},
-            {'trigger': 'initiate_game', 'source': 'loading', 'dest': 'initiating_game'},
-            {'trigger': 'play_game', 'source': 'initiating_game', 'dest': 'playing'},
+            {'trigger': 'initiate', 'source': 'loading', 'dest': 'initiating_game'},
+            {'trigger': 'play', 'source': 'initiating_game', 'dest': 'playing'},
         ]
 
         self.hots_menu = hots.MainMenu()
@@ -57,8 +60,8 @@ class Game(object):
         self.hots_game_screen = hots.GameScreen()
         self.emulator = windows_helpers.Emulator()
 
-        self.game_map = 'none'
         self.game_side = 'none'
+        self.game_map = None
 
         self.machine = Machine(model=self, states=states, transitions=transitions, initial='idle', queued=True)
 
@@ -90,16 +93,49 @@ class Game(object):
         self.hots_loading_screen.wait_for_loading()
 
     def state_initiating_game_on_enter(self):
+        logging.debug('Матч начался!')
+
+    def state_playing_on_enter(self):
         game_finished = False
+        current_tower_idx = 0
+        is_moving = False
+        current_time = datetime.now().timestamp()
+
+        towers = self.game_map.stops
+        if self.game_side == 'right_side':
+            logging.debug('Играем за правых, реверсим башни')
+            towers = list(reversed(self.game_map.stops))
 
         while not game_finished:
+            # detecting death
+            if self.hots_game_screen.detect_death():
+                time.sleep(1)
+                current_tower_idx = 0
+                continue
+
             # searching for target to attack
             creep = self.hots_game_screen.detect_enemy_creep()
 
             # moving or attacking creep
-            if creep is None:
-                self.hots_game_screen.move_forward(self.game_side)
-                self.emulator.wait_random_delay()
-            else:
+            if creep is not None:  # found creep - attack
+                logging.debug('Атакуем крипа')
                 self.hots_game_screen.attack(creep)
-                time.sleep(5)
+                time.sleep(3)
+            else:
+                logging.debug('Двигаемся - ' + is_moving.__str__())
+                logging.debug('Длительность движения - ' + (datetime.now().timestamp() - current_time).__str__())
+
+                if not is_moving or (is_moving and datetime.now().timestamp() - current_time > 10):
+                    current_tower_idx += 1
+                    if current_tower_idx == len(towers):
+                        current_tower_idx = 0
+                    next_tower = towers[current_tower_idx]
+                    self.hots_game_screen.move_to(next_tower.x, next_tower.y)
+
+                    is_moving = True
+                    current_time = datetime.now().timestamp()
+                    logging.debug('Начинаем движение к башне № ' + current_tower_idx.__str__())
+                else:
+                    logging.debug('Продолжаем ранее начатое движение')
+                    time.sleep(1)
+

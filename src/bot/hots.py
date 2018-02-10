@@ -75,12 +75,12 @@ class LoadingScreen(object):
         screenshot = self.pixel.screen()
         width = screenshot.width
 
-        for map_name, map_path in constants.MAP_COLORS.items():
+        for hots_map in constants.MAPS:
             if vision_helpers.screenshot_contains_template(
-                    screenshot.crop(0, 0, width, 300),
-                    os.path.join(constants.LOADING_SCREEN_TEMPLATES_PATH, map_path + '.png')):
-                logging.debug('Карта обнаружена: ' + map_name)
-                return map_name
+                    screenshot.crop((0, 0, width, 300)),
+                    os.path.join(constants.LOADING_SCREEN_TEMPLATES_PATH, hots_map.loading_screen_template_name + '.png')):
+                logging.debug('Карта обнаружена: ' + hots_map.name)
+                return hots_map
 
         logging.debug('Карта не определена')
 
@@ -119,12 +119,25 @@ class GameScreen(object):
 
         logging.debug('Крип не найден')
 
-    def move_forward(self, side):
+
+    def detect_death(self):
+        logging.debug('Определяю умер ли персонаж')
+
+        screenshot = self.pixel.screen().crop((920, 770, 1000, 840))
+        if vision_helpers.screenshot_contains_template(
+                screenshot,
+                os.path.join(constants.IMAGES_PATH, 'template_death.png')):
+            logging.debug('Персонаж мертв')
+            return True
+
+        return False
+
+
+    def move_to(self, x, y):
         logging.debug('Двигаюсь')
-        if side == 'right_side':
-            self.emulator.right_click(640, 500)
-        else:
-            self.emulator.right_click(800, 500)
+        self.emulator.click(x, y)
+        self.emulator.right_click(1920 / 2, 1080 / 2)
+        self.emulator.hotkey('space')
 
     def attack(self, creep):
         logging.debug('Атакую крипа')

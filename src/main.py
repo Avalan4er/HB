@@ -12,7 +12,8 @@ def main():
     game.select_hero()
     game.start_game()
     game.wait_for_match()
-    game.initiate_game()
+    game.initiate()
+    game.play()
 
 
 if __name__ == '__main__':

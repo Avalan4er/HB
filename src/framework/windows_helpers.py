@@ -32,6 +32,9 @@ class Emulator(object):
     def paste(self):
         pyautogui.hotkey('ctrl', 'v')
 
+    def hotkey(self, key):
+        pyautogui.hotkey(key)
+
     def wait_random_delay(self):
         delay = 1.0 + random.random() * 4.0
         time.sleep(delay)
