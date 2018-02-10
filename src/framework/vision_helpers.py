@@ -25,7 +25,8 @@ def find_closest_enemy_creep(screenshot):
 
 
 def screenshot_contains_template(screenshot, template_path):
-    image = cv2.cvtColor(numpy.array(screenshot), cv2.COLOR_RGB2GRAY)
+    width, height = screenshot.size
+    image = cv2.cvtColor(numpy.array(screenshot), cv2.COLOR_RGB2GRAY)[0:300, 0:width]
     template = cv2.imread(template_path, 0)
 
     res = cv2.matchTemplate(image, template, cv2.TM_CCOEFF_NORMED)

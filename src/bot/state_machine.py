@@ -86,8 +86,8 @@ class Game(object):
     def state_loading_on_enter(self):
         logging.debug('Грузимся в игру')
         self.game_map = self.hots_loading_screen.detect_map()
-        self.hots_loading_screen.wait_for_loading()
         self.game_side = self.hots_loading_screen.detect_side()
+        self.hots_loading_screen.wait_for_loading()
 
     def state_initiating_game_on_enter(self):
         game_finished = False

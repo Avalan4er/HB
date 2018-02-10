@@ -91,7 +91,7 @@ class LoadingScreen(object):
         logging.debug('Определяю сторону')
 
         side = 'right_side'
-        if self.pixel.matches(3, 285, (8, 88, 229)):
+        if self.pixel.matches(3, 285, (8, 88, 229), 10):
             side = 'left_side'
 
         logging.debug('Сторона определена: ' + side)
