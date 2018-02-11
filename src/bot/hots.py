@@ -5,6 +5,7 @@ import pyperclip
 import constants
 import vision_helpers
 import os
+import math
 
 
 class MainMenu(object):
@@ -56,12 +57,19 @@ class MainMenu(object):
     def wait_for_match(self):
         logging.debug('Ожидаю начала матча')
         loading_started = False
+        loading_finished = False
+
         while not loading_started:
             time.sleep(0.5)
             loading_started = self.pixel.matches(900, 500, (10, 10, 10), 10)
             logging.debug('Проверка начала игры: ' + loading_started.__str__())
 
-        time.sleep(2)
+            while loading_started and not loading_finished:
+                time.sleep(0.5)
+                loading_finished = not self.pixel.matches(900, 500, (10, 10, 10), 10)
+                logging.debug('Проверка начала игры: ' + loading_finished.__str__())
+
+        time.sleep(1)
         logging.debug('Матч начался')
 
 
@@ -78,7 +86,8 @@ class LoadingScreen(object):
         for hots_map in constants.MAPS:
             if vision_helpers.screenshot_contains_template(
                     screenshot.crop((0, 0, width, 300)),
-                    os.path.join(constants.LOADING_SCREEN_TEMPLATES_PATH, hots_map.loading_screen_template_name + '.png')):
+                    os.path.join(constants.LOADING_SCREEN_TEMPLATES_PATH,
+                                 hots_map.loading_screen_template_name + '.png')):
                 logging.debug('Карта обнаружена: ' + hots_map.name)
                 return hots_map
 
@@ -107,18 +116,26 @@ class GameScreen(object):
         self.pixel = windows_helpers.Pixel()
         self.emulator = windows_helpers.Emulator()
 
-    def detect_enemy_creep(self):
-        logging.debug('Ищу крипа')
-        screenshot = self.pixel.screen()
+    def wait_match_timer_start(self):
+        while not self.pixel.matches(395, 1000, (62, 172, 23), 1):
+            time.sleep(0.5)
 
-        creep_coords = vision_helpers.find_closest_enemy_creep(screenshot)
+    def detect_enemy_creep(self):
+        screenshot = self.pixel.screen()
+        creep_coords = None
+
+        enemy_creeps = list(vision_helpers.find_all_enemy_creeps(screenshot))
+        if enemy_creeps is not None and len(enemy_creeps) > 0:
+            player_coords = (1920 / 2, 500)
+            creeps = sorted(
+                enemy_creeps,
+                key=lambda creep: math.hypot(creep[0] - player_coords[0], creep[1] - player_coords[1]))
+            creep_coords = creeps[0]
 
         if creep_coords is not None:
-            logging.debug('Крип найден')
             return EnemyCreep(creep_coords[0], creep_coords[1])
 
         logging.debug('Крип не найден')
-
 
     def detect_death(self):
         logging.debug('Определяю умер ли персонаж')
@@ -132,7 +149,6 @@ class GameScreen(object):
 
         return False
 
-
     def move_to(self, x, y):
         logging.debug('Двигаюсь')
         self.emulator.click(x, y)
@@ -141,7 +157,59 @@ class GameScreen(object):
 
     def attack(self, creep):
         logging.debug('Атакую крипа')
-        self.emulator.right_click(creep.x + 30, creep.y + 50)
+        self.emulator.mouse_move(creep.x + 30, creep.y + 50)
+        self.emulator.press_key('a')
+
+    def stop(self):
+        logging.debug('Останавливаемся')
+        self.emulator.press_key('s')
+
+    def backpedal(self, game_side):
+        if game_side == 'left_side':
+            self.emulator.right_click(600, 500)
+        else:
+            self.emulator.right_click(1300, 500)
+
+        time.sleep(1)
+        self.emulator.wait_random_delay()
+
+    def get_health(self):
+        screenshot = self.pixel.screen().crop((200, 980, 430, 1030))
+        health = vision_helpers.get_health(screenshot)
+        logging.debug('Текущее здоровье - ' + health.__str__())
+        return health
+
+    def teleport(self):
+        self.emulator.press_key('b')
+
+
+class MapScreen(object):
+    def __init__(self, game_map, game_side):
+        self.pixel = windows_helpers.Pixel()
+        self.map = game_map
+        self.towers = game_map.stops
+        if game_side == 'right_side':
+            logging.debug('Играем за правых, реверсим башни')
+            self.towers = list(reversed(game_map.stops))
+
+    def get_frontline_tower(self):
+        for i, tower in enumerate(list(self.towers)):
+            if self.pixel.matches(tower.x, tower.y, (49, 132, 255), 1):
+                return i, tower
+
+        return 0, self.towers[0]
+
+    def check_enemy_tower_alive(self, tower):
+        # it is ours tower
+        if self.pixel.matches(tower.x, tower.y, (49, 132, 255), 2):
+            return False
+
+        # tower dead, pixel matches map background
+        if self.pixel.matches(tower.x, tower.y, (27, 16, 34), 5):
+            return False
+
+        return True
+
 
 class EnemyCreep(object):
     def __init__(self, x, y):

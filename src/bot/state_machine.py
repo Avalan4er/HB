@@ -30,7 +30,8 @@ class Application(object):
         logging.debug('HOTS запускается, жду ' + constants.WAIT_BEFORE_GAME_STARTS.__str__() + ' секунд')
         time.sleep(constants.WAIT_BEFORE_GAME_STARTS)
 
-        logging.debug('минута прошла')
+        game = Game()
+        game.switch_game_state()
 
 
 class Game(object):
@@ -70,72 +71,205 @@ class Game(object):
         self.emulator.wait_random_delay()
         self.hots_menu.open_vs_ai_panel()
         self.emulator.wait_random_delay()
+        self.select_game_mode()
 
     def state_selecting_game_mode_on_enter(self):
         self.hots_menu.select_alies_ai_mode()
         self.emulator.wait_random_delay()
         self.hots_menu.select_ai_level(config.AI_LEVEL)
         self.emulator.wait_random_delay()
+        self.select_hero()
 
     def state_selecting_hero_on_enter(self):
         self.hots_menu.select_hero(config.HERO_TO_LEVEL)
         self.emulator.wait_random_delay()
         self.hots_menu.start_game()
+        self.start_game()
 
     def state_waiting_match_on_enter(self):
         self.hots_menu.wait_for_match()
         time.sleep(2)
+        self.wait_for_match()
 
     def state_loading_on_enter(self):
         logging.debug('Грузимся в игру')
         self.game_map = self.hots_loading_screen.detect_map()
         self.game_side = self.hots_loading_screen.detect_side()
         self.hots_loading_screen.wait_for_loading()
+        self.initiate()
 
     def state_initiating_game_on_enter(self):
         logging.debug('Матч начался!')
+        self.play()
 
     def state_playing_on_enter(self):
-        game_finished = False
-        current_tower_idx = 0
-        is_moving = False
-        current_time = datetime.now().timestamp()
+        player = Player(self.game_side, self.game_map)
+        player.wait_for_game_start()
 
-        towers = self.game_map.stops
-        if self.game_side == 'right_side':
-            logging.debug('Играем за правых, реверсим башни')
-            towers = list(reversed(self.game_map.stops))
 
-        while not game_finished:
-            # detecting death
-            if self.hots_game_screen.detect_death():
+
+class Player(object):
+    def __init__(self, game_side, game_map):
+        states = [
+            State(name='idle'),
+            State(name='dead', on_enter=['state_dead_on_enter']),
+            State(name='thinking', on_enter=['state_thinking_on_enter']),
+            State(name='attacking', on_enter=['state_attacking_on_enter']),
+            State(name='moving', on_enter=['state_moving_on_enter']),
+            State(name='resting', on_enter=['state_resting_on_enter'])
+        ]
+        transitions = [
+            {'trigger': 'wait_for_game_start', 'source': 'idle', 'dest': 'thinking'},
+
+            {'trigger': 'attack', 'source': 'moving', 'dest': 'attacking'},
+            {'trigger': 'attack', 'source': 'attacking', 'dest': 'attacking'},
+
+            {'trigger': 'move', 'source': 'attacking', 'dest': 'moving'},
+            {'trigger': 'move', 'source': 'resting', 'dest': 'moving'},
+            {'trigger': 'move', 'source': 'dead', 'dest': 'moving'},
+            {'trigger': 'move', 'source': 'thinking', 'dest': 'moving'},
+            {'trigger': 'move', 'source': 'moving', 'dest': 'moving'},
+
+            {'trigger': 'rest', 'source': 'attacking', 'dest': 'resting'},
+
+            {'trigger': 'die', 'source': 'attacking', 'dest': 'dead'},
+            {'trigger': 'die', 'source': 'moving', 'dest': 'dead'},
+
+        ]
+
+        self.side = game_side
+        self.map = game_map
+        self.current_tower = 0
+        self.current_hp = 100
+
+        self.game_screen = hots.GameScreen()
+        self.map_screen = hots.MapScreen(game_map, game_side)
+
+        self.machine = Machine(model=self, states=states, transitions=transitions, initial='idle', queued=True)
+
+    def state_thinking_on_enter(self):
+        logging.debug('Ожидаю начала отсчета времени')
+
+        # wait until match timer starts
+        self.game_screen.wait_match_timer_start()
+
+        logging.debug('Иду ко второй башне')
+        # move to second tower
+        second_tower = self.map_screen.towers[1]
+        self.game_screen.move_to(second_tower.x, second_tower.y)
+        self.current_tower = 1
+
+        logging.debug('Жду начала матча')
+        # wait until match begins
+        time.sleep(35)
+
+        logging.debug('Иду воевать!')
+        self.current_tower, frontline_tower = self.map_screen.get_frontline_tower()
+        self.move(frontline_tower.x, frontline_tower.y)
+
+    def state_moving_on_enter(self, x=0.0, y=0.0):
+        if x == 0.0 or y == 0.0:
+            logging.debug('Что то пошло не так. Аргументы для движения - нулевые')
+            return None
+
+        if self.game_screen.detect_death():
+            self.die()
+            return None
+
+        if self.game_screen.get_health() < 30:
+            self.rest()
+            return None
+
+        movement_start_time = datetime.now().timestamp()
+
+        logging.debug('Выдвигаюсь к башне №' + self.current_tower.__str__())
+        h_offset = 50 if self.side == 'left_side' else -50
+        self.game_screen.move_to(x + h_offset, y + 10)
+
+        while True:
+            if datetime.now().timestamp() - movement_start_time > 10:  # move complete, gonna move to next tower
+                self.move_to_next_tower()
+                break
+            else:  # still moving and searching for enemies
                 time.sleep(1)
-                current_tower_idx = 0
-                continue
 
-            # searching for target to attack
-            creep = self.hots_game_screen.detect_enemy_creep()
+                creep = self.game_screen.detect_enemy_creep()
 
-            # moving or attacking creep
-            if creep is not None:  # found creep - attack
-                logging.debug('Атакуем крипа')
-                self.hots_game_screen.attack(creep)
-                time.sleep(3)
-            else:
-                logging.debug('Двигаемся - ' + is_moving.__str__())
-                logging.debug('Длительность движения - ' + (datetime.now().timestamp() - current_time).__str__())
+                if creep is not None:
+                    logging.debug('Нашел дичь')
+                    self.attack(creep)
+                    break
 
-                if not is_moving or (is_moving and datetime.now().timestamp() - current_time > 10):
-                    current_tower_idx += 1
-                    if current_tower_idx == len(towers):
-                        current_tower_idx = 0
-                    next_tower = towers[current_tower_idx]
-                    self.hots_game_screen.move_to(next_tower.x, next_tower.y)
+    def state_attacking_on_enter(self, creep):
+        if self.game_screen.detect_death():
+            self.die()
+            return None
 
-                    is_moving = True
-                    current_time = datetime.now().timestamp()
-                    logging.debug('Начинаем движение к башне № ' + current_tower_idx.__str__())
-                else:
-                    logging.debug('Продолжаем ранее начатое движение')
-                    time.sleep(1)
+        if self.game_screen.get_health() < 30:
+            self.rest()
+            return None
+
+        logging.debug('Атакую противника')
+        self.game_screen.stop()
+        self.game_screen.attack(creep)
+        time.sleep(2)
+
+        health = self.game_screen.get_health()
+        if health < self.current_hp:
+            logging.debug('Нас бьют. отступаем')
+            self.current_hp = health
+            self.game_screen.backpedal(self.side)
+
+        next_creep = self.game_screen.detect_enemy_creep()
+        if next_creep is not None:
+            self.attack(next_creep)
+        else:
+            logging.debug('Целей больше нет. Двигаюсь дальше')
+            self.move_to_next_tower()
+
+    def state_dead_on_enter(self):
+        logging.debug('Поездочка...')
+        self.current_tower = 0
+
+        while self.game_screen.detect_death():
+            time.sleep(1)
+
+        time.sleep(2)
+        logging.debug('Воскрес')
+        self.move_to_next_tower()
+
+    def state_resting_on_enter(self):
+        logging.debug('Поплохело, иду отдыхать')
+        self.current_tower, frontline_tower = self.map_screen.get_frontline_tower()
+        self.game_screen.move_to(frontline_tower.x, frontline_tower.y)
+
+        self.game_screen.teleport()
+        time.sleep(15)
+        self.move_to_next_tower()
+
+    def move_to_next_tower(self):
+        self.current_tower += 1
+
+        logging.debug('Выдвигаюсь к следующей башне №' + self.current_tower.__str__())
+        if self.current_tower == len(self.map_screen.towers):
+            idx, t = self.map_screen.get_frontline_tower()
+            self.current_tower = idx
+
+        tower = self.map_screen.towers[self.current_tower]
+        if not self.map_screen.check_enemy_tower_alive(tower):
+            logging.debug('Это либо наша башня либо уничтоженная башня врага')
+            self.move(
+                tower.x,
+                tower.y)
+        else:
+            logging.debug('Это живая башня врага. Не пойду туда')
+
+            h_offset = 50 if self.side == 'left_side' else -50
+            idx, tower = self.map_screen.get_frontline_tower()
+            logging.debug('Фронтлайновая башня это башня №' + idx.__str__())
+
+            self.current_tower = idx
+            self.move(
+                tower.x + h_offset,
+                tower.y)
 
