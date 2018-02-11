@@ -192,20 +192,36 @@ class MapScreen(object):
             logging.debug('Играем за правых, реверсим башни')
             self.towers = list(reversed(game_map.stops))
 
-    def get_frontline_tower(self):
-        for i, tower in enumerate(list(self.towers)):
-            if self.pixel.matches(tower.x, tower.y, (49, 132, 255), 1):
-                return i, tower
+        towers_count = len(self.towers)
+        half_towers = (towers_count / 2).__int__()
+        self.our_towers = self.towers[0:half_towers]
+        self.enemy_towers = self.towers[half_towers:towers_count]
 
-        return 0, self.towers[0]
+    def get_frontline_tower_index(self, screenshot):
+        alive_tower_color = (49, 132, 255)
 
-    def check_enemy_tower_alive(self, tower):
+        for idx, tower in enumerate(reversed(self.our_towers)):
+            pixel = screenshot.getpixel((tower.x, tower.y))
+            if (alive_tower_color[0] - 5 < pixel[0] < alive_tower_color[0] + 5 and
+                    alive_tower_color[1] - 5 < pixel[1] < alive_tower_color[1] + 5 and
+                    alive_tower_color[2] - 5 < pixel[2] < alive_tower_color[2] + 5):
+                return len(self.our_towers) - idx - 1
+
+        return len(self.our_towers) - 1
+
+    def check_enemy_tower_alive(self, screenshot, tower_index):
+        map_background_color = (27, 16, 34)
+
         # it is ours tower
-        if self.pixel.matches(tower.x, tower.y, (49, 132, 255), 2):
+        if tower_index < len(self.our_towers):
             return False
 
         # tower dead, pixel matches map background
-        if self.pixel.matches(tower.x, tower.y, (27, 16, 34), 5):
+        tower = self.towers[tower_index]
+        pixel = screenshot.getpixel((tower.x, tower.y))
+        if (map_background_color[0] - 10 < pixel[0] < map_background_color[0] + 10 and
+                map_background_color[1] - 10 < pixel[1] < map_background_color[1] + 10 and
+                map_background_color[2] - 10 < pixel[2] < map_background_color[2] + 10):
             return False
 
         return True

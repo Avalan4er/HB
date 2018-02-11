@@ -131,6 +131,7 @@ class Player(object):
             {'trigger': 'move', 'source': 'moving', 'dest': 'moving'},
 
             {'trigger': 'rest', 'source': 'attacking', 'dest': 'resting'},
+            {'trigger': 'rest', 'source': 'moving', 'dest': 'resting'},
 
             {'trigger': 'die', 'source': 'attacking', 'dest': 'dead'},
             {'trigger': 'die', 'source': 'moving', 'dest': 'dead'},
@@ -161,17 +162,12 @@ class Player(object):
 
         logging.debug('Жду начала матча')
         # wait until match begins
-        time.sleep(35)
+        time.sleep(config.MATCH_COUNTDOWN)
 
         logging.debug('Иду воевать!')
-        self.current_tower, frontline_tower = self.map_screen.get_frontline_tower()
-        self.move(frontline_tower.x, frontline_tower.y)
+        self.move()
 
-    def state_moving_on_enter(self, x=0.0, y=0.0):
-        if x == 0.0 or y == 0.0:
-            logging.debug('Что то пошло не так. Аргументы для движения - нулевые')
-            return None
-
+    def state_moving_on_enter(self):
         if self.game_screen.detect_death():
             self.die()
             return None
@@ -180,25 +176,58 @@ class Player(object):
             self.rest()
             return None
 
+        movement_length = config.MOVEMENT_LONG
+        screenshot = self.game_screen.pixel.screen()
+        current_tower_index = self.current_tower
+        frontline_tower_index = self.map_screen.get_frontline_tower_index(screenshot)
+
+
+        if current_tower_index < frontline_tower_index:  # если мы еще не на фронте
+            destination_tower_index = frontline_tower_index
+            logging.debug('Движение к фронтовой башне')
+        else:  # если уже на фронте или дальше
+            next_tower_index = current_tower_index + 1
+            if self.map_screen.check_enemy_tower_alive(screenshot, next_tower_index):  # если следующий вражеский тавер жив
+                movement_length = config.MOVEMENT_SHORT # будем двигаться не доходя до башни
+                destination_tower_index = next_tower_index
+                logging.debug('Двигаемся на пару шагов вперед к живой башне врага')
+            else:  # в противном случае делаем полный переход
+                destination_tower_index = next_tower_index
+                logging.debug('Двигаемся к мертвой башне врага')
+
+        # начинаем движение
+        destination_tower = self.map_screen.towers[destination_tower_index]
         movement_start_time = datetime.now().timestamp()
 
-        logging.debug('Выдвигаюсь к башне №' + self.current_tower.__str__())
-        h_offset = 50 if self.side == 'left_side' else -50
-        self.game_screen.move_to(x + h_offset, y + 10)
+        # определяем сдвиг камеры для точки движения
+        h_offset = 20
+        if self.side == 'right_side':  # если мы за правых
+            h_offset *= -1
 
-        while True:
-            if datetime.now().timestamp() - movement_start_time > 10:  # move complete, gonna move to next tower
-                self.move_to_next_tower()
-                break
-            else:  # still moving and searching for enemies
-                time.sleep(1)
+        if destination_tower_index > frontline_tower_index:  # если идем к врагу
+            h_offset *= -1.4  # не подходим на пушечный выстрел
 
-                creep = self.game_screen.detect_enemy_creep()
+        self.game_screen.move_to(destination_tower.x + h_offset, destination_tower.y)
+        logging.debug('Двигаюсь к башне №' + destination_tower_index.__str__())
 
-                if creep is not None:
-                    logging.debug('Нашел дичь')
-                    self.attack(creep)
-                    break
+        # пока движемся - ищем крипов
+        while datetime.now().timestamp() - movement_start_time < movement_length:
+            creep = self.game_screen.detect_enemy_creep()
+
+            if creep is not None:
+                logging.debug('Цель обнаружена. Перехожу к атаке')
+                self.game_screen.stop()
+                self.attack(creep)
+                return None
+
+            time.sleep(1)
+
+        # движение закончено, целей не обнаружено
+        if movement_length == config.MOVEMENT_LONG:  # если дошли до следущей башни
+            self.current_tower = destination_tower_index  # то повышаем индекс
+
+        self.move()  # движемся дальше
+
 
     def state_attacking_on_enter(self, creep):
         if self.game_screen.detect_death():
@@ -210,66 +239,42 @@ class Player(object):
             return None
 
         logging.debug('Атакую противника')
-        self.game_screen.stop()
         self.game_screen.attack(creep)
-        time.sleep(2)
 
-        health = self.game_screen.get_health()
-        if health < self.current_hp:
-            logging.debug('Нас бьют. отступаем')
-            self.current_hp = health
-            self.game_screen.backpedal(self.side)
+
+        for i in range(1, random.randint(2, 6)):
+            time.sleep(0.5)
+            health = self.game_screen.get_health()
+            if health < self.current_hp:
+                logging.debug('Нас бьют. отступаем')
+                self.current_hp = health
+                self.game_screen.backpedal(self.side)
 
         next_creep = self.game_screen.detect_enemy_creep()
         if next_creep is not None:
             self.attack(next_creep)
         else:
             logging.debug('Целей больше нет. Двигаюсь дальше')
-            self.move_to_next_tower()
+            self.move()
 
     def state_dead_on_enter(self):
-        logging.debug('Поездочка...')
+        logging.debug('Персонаж умер')
         self.current_tower = 0
 
         while self.game_screen.detect_death():
-            time.sleep(1)
+             time.sleep(1)
 
         time.sleep(2)
-        logging.debug('Воскрес')
-        self.move_to_next_tower()
+        logging.debug('Персонаж воскрес')
+        self.move()
 
     def state_resting_on_enter(self):
-        logging.debug('Поплохело, иду отдыхать')
-        self.current_tower, frontline_tower = self.map_screen.get_frontline_tower()
-        self.game_screen.move_to(frontline_tower.x, frontline_tower.y)
+        logging.debug('Мало здоровья, возвращаюсь на базу')
+        self.game_screen.backpedal(self.side)
+        self.game_screen.backpedal(self.side)
 
         self.game_screen.teleport()
+        self.current_tower = 0
+
         time.sleep(15)
-        self.move_to_next_tower()
-
-    def move_to_next_tower(self):
-        self.current_tower += 1
-
-        logging.debug('Выдвигаюсь к следующей башне №' + self.current_tower.__str__())
-        if self.current_tower == len(self.map_screen.towers):
-            idx, t = self.map_screen.get_frontline_tower()
-            self.current_tower = idx
-
-        tower = self.map_screen.towers[self.current_tower]
-        if not self.map_screen.check_enemy_tower_alive(tower):
-            logging.debug('Это либо наша башня либо уничтоженная башня врага')
-            self.move(
-                tower.x,
-                tower.y)
-        else:
-            logging.debug('Это живая башня врага. Не пойду туда')
-
-            h_offset = 50 if self.side == 'left_side' else -50
-            idx, tower = self.map_screen.get_frontline_tower()
-            logging.debug('Фронтлайновая башня это башня №' + idx.__str__())
-
-            self.current_tower = idx
-            self.move(
-                tower.x + h_offset,
-                tower.y)
-
+        self.move()

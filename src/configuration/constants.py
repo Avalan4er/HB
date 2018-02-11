@@ -17,7 +17,7 @@ MAPS = [
         'braxis_holdout'),
 
     Map('BlackheartsBay',
-        [MapStop(1561, 935), MapStop(1587, 919), MapStop(16447, 872), MapStop(1746, 870), MapStop(1803, 916), MapStop(1831, 933)],
+        [MapStop(1561, 935), MapStop(1587, 919), MapStop(1647, 872), MapStop(1746, 870), MapStop(1803, 916), MapStop(1831, 933)],
         'blackhearts_bay'),
 
     Map('BattlefieldOfEternity',
