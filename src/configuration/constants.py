@@ -3,6 +3,7 @@ from objects import Map, MapStop
 
 WAIT_BEFORE_GAME_STARTS = 30
 
+ABILITY_KEYS = ['q', 'w', 'e']
 IMAGES_PATH = os.path.join('resources', 'img')
 LOADING_SCREEN_TEMPLATES_PATH = os.path.join(IMAGES_PATH, 'loading_screen')
 MAPS = [

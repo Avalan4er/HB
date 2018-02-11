@@ -1,5 +1,6 @@
 import logging
 import state_machine
+import random
 
 
 def main():
@@ -9,16 +10,14 @@ def main():
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG, format='%(asctime)s.%(msecs)03d: %(message)s', datefmt='%H:%M:%S')
     # logging.disable(logging.DEBUG) # uncomment to block debug log messages
+    random.seed(12331551)
     main()
-
 
 
     #import state_machine
     #from objects import Map, MapStop
 
-    #map = Map('InfernalShrines',
-    #    [MapStop(1556, 888), MapStop(1589, 888), MapStop(1643, 894), MapStop(1749, 893), MapStop(1804, 888), MapStop(1835, 888)],
-    #    'infernal_shrines')
+    #map = Map('TowersOfDoom', [MapStop(1641, 912), MapStop(1751, 912)], 'towers_of_doom')
     #player = state_machine.Player('left_side', map)
     #player.wait_for_game_start()
 

@@ -6,6 +6,7 @@ import constants
 import vision_helpers
 import os
 import math
+import random
 
 
 class MainMenu(object):
@@ -168,6 +169,16 @@ class GameScreen(object):
         logging.debug('Останавливаемся')
         self.emulator.press_key('s')
 
+    def use_random_ability(self):
+        abiltity = constants.ABILITY_KEYS[random.randint(0, 2)]
+        logging.debug('Использую суперспособность ' + abiltity)
+        self.emulator.use_ability(abiltity)
+
+    def learn_random_talent(self):
+        talent_number = random.randint(1, 4)
+        logging.debug('Учу талант № ' + talent_number.__str__())
+        self.emulator.select_talent(talent_number)
+
     def backpedal(self, game_side):
         if game_side == 'left_side':
             self.emulator.right_click(600, 500)
@@ -229,6 +240,9 @@ class MapScreen(object):
         # it is ours tower
         if tower_index < len(self.our_towers):
             return False
+
+        if tower_index >= len(self.towers):
+            tower_index = len(self.towers) - 1
 
         # tower dead, pixel matches map background
         tower = self.towers[tower_index]

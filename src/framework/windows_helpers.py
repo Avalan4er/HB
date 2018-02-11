@@ -40,6 +40,17 @@ class Emulator(object):
     def hotkey(self, key):
         pyautogui.hotkey(key)
 
+    def select_talent(self, talent_number):
+        pyautogui.keyDown('ctrl')
+        time.sleep(0.2)
+        pyautogui.press(talent_number.__str__())
+        pyautogui.keyUp('ctrl')
+
+    def use_ability(self, ability_key):
+        pyautogui.keyDown(ability_key)
+        time.sleep(0.2)
+        pyautogui.keyUp(ability_key)
+
     # random
     def wait_random_delay(self):
         delay = 1.0 + random.random() * 4.0

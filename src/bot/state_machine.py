@@ -145,8 +145,6 @@ class Game(object):
         self.start_new()
 
 
-
-
 class Player(object):
     def __init__(self, game_side, game_map):
         states = [
@@ -244,6 +242,9 @@ class Player(object):
                 logging.debug('Двигаемся к мертвой башне врага')
 
         #  определяем к какой башне движемся
+        if destination_tower_index >= len(self.map_screen.towers):
+            destination_tower_index = len(self.map_screen.towers) - 1
+
         destination_tower = self.map_screen.towers[destination_tower_index]
 
         # определяем сдвиг камеры для точки движения
@@ -257,6 +258,10 @@ class Player(object):
         # начинаем движение
         self.game_screen.move_to(destination_tower.x + h_offset, destination_tower.y)
         logging.debug('Двигаюсь к башне №' + destination_tower_index.__str__())
+
+        if random.randint(0, 4) == 3:
+            logging.debug('Кости сложились удачно')
+            self.game_screen.learn_random_talent()
 
         # пока движемся - ищем крипов
         movement_start_time = datetime.now().timestamp()
@@ -289,18 +294,28 @@ class Player(object):
             self.rest()
             return None
 
+        self.current_hp = self.game_screen.get_health()
         logging.debug('Атакую противника')
         self.game_screen.attack(creep)
+
+        if random.randint(0, 5) == 3:
+            logging.debug('Кости сложились удачно')
+            self.game_screen.use_random_ability()
+            time.sleep(0.5)
 
 
         for i in range(1, random.randint(2, 6)):
             time.sleep(0.5)
             health = self.game_screen.get_health()
-            if health < self.current_hp:
-                logging.debug('Нас бьют. отступаем')
+            if health - self.current_hp > 10:
+                logging.debug('Нас больно бьют, ретируемся')
                 self.current_hp = health
                 self.game_screen.run_away(self.map_screen.towers[0])
                 break
+            elif health - self.current_hp > 3:
+                logging.debug('Нас бьют, но не сильно. Бэкпедалим')
+                self.current_hp = health
+                self.game_screen.backpedal(self.side)
 
         next_creep = self.game_screen.detect_enemy_creep()
         if next_creep is not None:

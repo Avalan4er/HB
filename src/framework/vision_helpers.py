@@ -50,9 +50,9 @@ def find_all_enemy_creeps(screenshot):
 
     for contour in contours:
         area = cv2.contourArea(contour)
-        if 50 < area < 170:
+        if 50 < area < 400:
             x, y, w, h = cv2.boundingRect(contour)
-            if 3 < h < 6:
+            if 3 < h < 15:
                 yield x, y #x + 300, y + 100
 
     return None
