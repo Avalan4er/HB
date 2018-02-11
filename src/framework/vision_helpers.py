@@ -27,6 +27,11 @@ def find_all_enemy_creeps(screenshot):
         numpy.array(screenshot),
         cv2.COLOR_RGB2BGR)
 
+    #  закрашиваем некоторые части экрана которые создают кучу неправильных контуров
+    cv2.rectangle(screenshot,(1490, 750),(1920, 1080),(0,0,0),-1)  # закрашиваем миникарту
+    cv2.rectangle(screenshot, (360, 0), (1546, 90), (0, 0, 0), -1)  # закрашиваем панель героев
+
+
     # filter health bar color
     mask_enemy_health = cv2.inRange(screenshot, numpy.array([55, 0, 187]), numpy.array([63, 0, 215]))
     mask = mask_enemy_health  # build mask
@@ -37,9 +42,15 @@ def find_all_enemy_creeps(screenshot):
     ret, thresh = cv2.threshold(imgray, 1, 255, cv2.THRESH_BINARY)  # then convert to black/white
     im2, contours, hierarchy = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)  # find contours
 
+    #cv2.namedWindow('img')
+    #cv2.drawContours(screenshot, contours, -1, (0, 255, 0), 1)
+    #cv2.imshow('img', screenshot)
+    #cv2.waitKey(0)
+    #cv2.destroyAllWindows()
+
     for contour in contours:
         area = cv2.contourArea(contour)
-        if 40 < area < 200:
+        if 50 < area < 170:
             x, y, w, h = cv2.boundingRect(contour)
             if 3 < h < 6:
                 yield x, y #x + 300, y + 100

@@ -60,17 +60,22 @@ class MainMenu(object):
         loading_finished = False
 
         while not loading_started:
-            time.sleep(0.5)
+            time.sleep(0.2)
             loading_started = self.pixel.matches(900, 500, (10, 10, 10), 10)
-            logging.debug('Проверка начала игры: ' + loading_started.__str__())
 
             while loading_started and not loading_finished:
-                time.sleep(0.5)
+                time.sleep(0.2)
                 loading_finished = not self.pixel.matches(900, 500, (10, 10, 10), 10)
-                logging.debug('Проверка начала игры: ' + loading_finished.__str__())
 
-        time.sleep(1)
+        time.sleep(0.5)
         logging.debug('Матч начался')
+
+    def check_if_game_finished(self):
+        screenshot = self.pixel.screen().crop((230, 145, 562, 232))
+        return vision_helpers.screenshot_contains_template(screenshot, os.path.join(constants.IMAGES_PATH, 'mvp.png'))
+
+    def press_skip_button(self):
+        self.emulator.click(100, 1030)
 
 
 class LoadingScreen(object):
@@ -135,7 +140,6 @@ class GameScreen(object):
         if creep_coords is not None:
             return EnemyCreep(creep_coords[0], creep_coords[1])
 
-        logging.debug('Крип не найден')
 
     def detect_death(self):
         logging.debug('Определяю умер ли персонаж')
@@ -150,13 +154,11 @@ class GameScreen(object):
         return False
 
     def move_to(self, x, y):
-        logging.debug('Двигаюсь')
         self.emulator.click(x, y)
         self.emulator.right_click(1920 / 2, 1080 / 2)
         self.emulator.hotkey('space')
 
     def attack(self, creep):
-        logging.debug('Атакую крипа')
         self.emulator.mouse_move(creep.x + 30, creep.y + 50)
         self.emulator.press_key('a')
 
@@ -173,6 +175,15 @@ class GameScreen(object):
         time.sleep(1)
         self.emulator.wait_random_delay()
 
+    def run_away(self, home_tower):
+        self.emulator.click(home_tower.x, home_tower.y)
+
+        for i in range(0, 5):
+            self.emulator.right_click(1920/2, 500)
+            time.sleep(0.2)
+
+        self.emulator.hotkey('space')
+
     def get_health(self):
         screenshot = self.pixel.screen().crop((200, 980, 430, 1030))
         health = vision_helpers.get_health(screenshot)
@@ -181,6 +192,7 @@ class GameScreen(object):
 
     def teleport(self):
         self.emulator.press_key('b')
+        time.sleep(2)
 
 
 class MapScreen(object):

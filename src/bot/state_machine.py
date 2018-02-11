@@ -6,6 +6,7 @@ import hots
 import config
 import constants
 import random
+import threading
 from datetime import datetime
 
 
@@ -44,7 +45,8 @@ class Game(object):
             State(name='waiting_match', on_enter=['state_waiting_match_on_enter']),
             State(name='loading', on_enter=['state_loading_on_enter']),
             State(name='initiating_game', on_enter=['state_initiating_game_on_enter']),
-            State(name='playing', on_enter=['state_playing_on_enter'])
+            State(name='playing', on_enter=['state_playing_on_enter']),
+            State(name='finishing', on_enter=['state_finishing_on_enter'])
         ]
         transitions = [
             {'trigger': 'switch_game_state', 'source': 'idle', 'dest': 'main_menu'},
@@ -54,6 +56,9 @@ class Game(object):
             {'trigger': 'wait_for_match', 'source': 'waiting_match', 'dest': 'loading'},
             {'trigger': 'initiate', 'source': 'loading', 'dest': 'initiating_game'},
             {'trigger': 'play', 'source': 'initiating_game', 'dest': 'playing'},
+            {'trigger': 'finish', 'source': 'playing', 'dest': 'finishing'},
+            {'trigger': 'start_new', 'source': 'finishing', 'dest': 'waiting_match'},
+
         ]
 
         self.hots_menu = hots.MainMenu()
@@ -83,10 +88,10 @@ class Game(object):
     def state_selecting_hero_on_enter(self):
         self.hots_menu.select_hero(config.HERO_TO_LEVEL)
         self.emulator.wait_random_delay()
-        self.hots_menu.start_game()
         self.start_game()
 
     def state_waiting_match_on_enter(self):
+        self.hots_menu.start_game()
         self.hots_menu.wait_for_match()
         time.sleep(2)
         self.wait_for_match()
@@ -104,7 +109,41 @@ class Game(object):
 
     def state_playing_on_enter(self):
         player = Player(self.game_side, self.game_map)
-        player.wait_for_game_start()
+        thread = threading.Thread(target=player.wait_for_game_start)
+        thread.start()
+
+        while not self.hots_menu.check_if_game_finished():
+            time.sleep(5)
+
+        logging.debug('Игра завершена')
+
+        player.finish()  # finish playing
+        self.finish()
+
+    def state_finishing_on_enter(self):
+        #  skip mvp screen
+        logging.debug('Пропускаю окно mvp')
+        self.hots_menu.press_skip_button()
+        self.emulator.wait_random_delay()
+
+        # skip stats screen
+        logging.debug('Пропускаю окно статистики')
+        self.hots_menu.press_skip_button()
+        self.emulator.wait_random_delay()
+
+        # wait for loading
+        logging.debug('Жду загрузки')
+        self.hots_loading_screen.wait_for_loading()
+        self.emulator.wait_random_delay()
+
+        # skip experience screen
+        logging.debug('Пропускаю окно начисления опыта')
+        self.hots_menu.press_skip_button()
+        self.emulator.wait_random_delay()
+
+        logging.debug('Начинаю новую игру')
+        self.start_new()
+
 
 
 
@@ -135,6 +174,11 @@ class Player(object):
 
             {'trigger': 'die', 'source': 'attacking', 'dest': 'dead'},
             {'trigger': 'die', 'source': 'moving', 'dest': 'dead'},
+
+            {'trigger': 'finish', 'source': 'dead', 'dest': 'idle'},
+            {'trigger': 'finish', 'source': 'attacking', 'dest': 'idle'},
+            {'trigger': 'finish', 'source': 'moving', 'dest': 'idle'},
+            {'trigger': 'finish', 'source': 'resting', 'dest': 'idle'},
 
         ]
 
@@ -185,6 +229,10 @@ class Player(object):
         if current_tower_index < frontline_tower_index:  # если мы еще не на фронте
             destination_tower_index = frontline_tower_index
             logging.debug('Движение к фронтовой башне')
+        elif self.game_screen.get_health() < self.current_hp:  # нас бьют
+            destination_tower_index = frontline_tower_index
+            self.current_hp = self.game_screen.get_health()
+            logging.debug('Нас бьют, значит мы идем к своей башне')
         else:  # если уже на фронте или дальше
             next_tower_index = current_tower_index + 1
             if self.map_screen.check_enemy_tower_alive(screenshot, next_tower_index):  # если следующий вражеский тавер жив
@@ -195,9 +243,8 @@ class Player(object):
                 destination_tower_index = next_tower_index
                 logging.debug('Двигаемся к мертвой башне врага')
 
-        # начинаем движение
+        #  определяем к какой башне движемся
         destination_tower = self.map_screen.towers[destination_tower_index]
-        movement_start_time = datetime.now().timestamp()
 
         # определяем сдвиг камеры для точки движения
         h_offset = 20
@@ -207,10 +254,12 @@ class Player(object):
         if destination_tower_index > frontline_tower_index:  # если идем к врагу
             h_offset *= -1.4  # не подходим на пушечный выстрел
 
+        # начинаем движение
         self.game_screen.move_to(destination_tower.x + h_offset, destination_tower.y)
         logging.debug('Двигаюсь к башне №' + destination_tower_index.__str__())
 
         # пока движемся - ищем крипов
+        movement_start_time = datetime.now().timestamp()
         while datetime.now().timestamp() - movement_start_time < movement_length:
             creep = self.game_screen.detect_enemy_creep()
 
@@ -222,10 +271,12 @@ class Player(object):
 
             time.sleep(1)
 
-        # движение закончено, целей не обнаружено
+        logging.debug('Движение закончено, целей не обнаружено')
         if movement_length == config.MOVEMENT_LONG:  # если дошли до следущей башни
             self.current_tower = destination_tower_index  # то повышаем индекс
 
+        self.game_screen.stop()
+        time.sleep(3)
         self.move()  # движемся дальше
 
 
@@ -248,7 +299,8 @@ class Player(object):
             if health < self.current_hp:
                 logging.debug('Нас бьют. отступаем')
                 self.current_hp = health
-                self.game_screen.backpedal(self.side)
+                self.game_screen.run_away(self.map_screen.towers[0])
+                break
 
         next_creep = self.game_screen.detect_enemy_creep()
         if next_creep is not None:
