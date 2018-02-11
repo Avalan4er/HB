@@ -129,17 +129,17 @@ class Game(object):
         # skip stats screen
         logging.debug('Пропускаю окно статистики')
         self.hots_menu.press_skip_button()
-        self.emulator.wait_random_delay()
+        time.sleep(5)
 
         # wait for loading
         logging.debug('Жду загрузки')
         self.hots_loading_screen.wait_for_loading()
-        self.emulator.wait_random_delay()
+        time.sleep(5)
 
         # skip experience screen
         logging.debug('Пропускаю окно начисления опыта')
         self.hots_menu.press_skip_button()
-        self.emulator.wait_random_delay()
+        time.sleep(5)
 
         logging.debug('Начинаю новую игру')
         self.start_new()
@@ -318,6 +318,7 @@ class Player(object):
 
         time.sleep(2)
         logging.debug('Персонаж воскрес')
+        self.current_hp = self.game_screen.get_health()
         self.move()
 
     def state_resting_on_enter(self):
@@ -329,4 +330,5 @@ class Player(object):
         self.current_tower = 0
 
         time.sleep(15)
+        self.current_hp - self.game_screen.get_health()
         self.move()
