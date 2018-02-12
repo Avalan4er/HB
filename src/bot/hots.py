@@ -200,7 +200,6 @@ class GameScreen(object):
     def get_health(self):
         screenshot = self.pixel.screen().crop((200, 980, 430, 1030))
         health = vision_helpers.get_health(screenshot)
-        logging.debug('Текущее здоровье - ' + health.__str__())
         return health
 
     def teleport(self):

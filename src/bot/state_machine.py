@@ -121,10 +121,11 @@ class Game(object):
         self.finish()
 
     def state_finishing_on_enter(self):
+        time.sleep(5)
         #  skip mvp screen
         logging.debug('Пропускаю окно mvp')
         self.hots_menu.press_skip_button()
-        self.emulator.wait_random_delay()
+        time.sleep(5)
 
         # skip stats screen
         logging.debug('Пропускаю окно статистики')
@@ -307,12 +308,13 @@ class Player(object):
         for i in range(1, random.randint(2, 6)):
             time.sleep(0.5)
             health = self.game_screen.get_health()
-            if health - self.current_hp > 10:
+            delta_health = self.current_hp - health
+            if delta_health > 10:
                 logging.debug('Нас больно бьют, ретируемся')
                 self.current_hp = health
                 self.game_screen.run_away(self.map_screen.towers[0])
                 break
-            elif health - self.current_hp > 3:
+            elif delta_health > 3:
                 logging.debug('Нас бьют, но не сильно. Бэкпедалим')
                 self.current_hp = health
                 self.game_screen.backpedal(self.side)
