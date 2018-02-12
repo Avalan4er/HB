@@ -77,6 +77,13 @@ class MainMenu(object):
         screenshot = self.pixel.screen().crop((230, 145, 562, 232))
         return vision_helpers.screenshot_contains_template(screenshot, os.path.join(constants.IMAGES_PATH, 'mvp.png'))
 
+    def check_if_afk_screen(self):
+        screenshot = self.pixel.screen().crop((750, 590, 960, 660))
+        return vision_helpers.screenshot_contains_template(screenshot, os.path.join(constants.IMAGES_PATH, 'btn_return.png'))
+
+    def press_return_button(self):
+        self.emulator.click(855, 622)
+
     def press_skip_button(self):
         self.emulator.click(100, 1030)
 

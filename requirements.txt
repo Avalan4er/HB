@@ -4,4 +4,3 @@ pyautogui
 transitions
 pyperclip
 opencv-python
-cx_Freeze

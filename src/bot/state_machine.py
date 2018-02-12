@@ -109,15 +109,22 @@ class Game(object):
 
     def state_playing_on_enter(self):
         player = Player(self.game_side, self.game_map)
-        thread = threading.Thread(target=player.wait_for_game_start)
-        thread.start()
+        player_thread = threading.Thread(target=player.wait_for_game_start)
+        player_thread.start()
 
+        # поток проверки, не выбросило ли нас в окно АФК
+        afk_thread = threading.Thread(target=self.return_to_game_if_afk)
+        afk_thread.start()
+
+        # проверка не закончился ли матч
         while not self.hots_menu.check_if_game_finished():
             time.sleep(5)
 
         logging.debug('Игра завершена')
 
         player.finish()  # finish playing
+        player_thread._stop()
+        afk_thread._stop()
         self.finish()
 
     def state_finishing_on_enter(self):
@@ -144,6 +151,15 @@ class Game(object):
 
         logging.debug('Начинаю новую игру')
         self.start_new()
+
+
+    def return_to_game_if_afk(self):
+        while True:
+            if self.hots_menu.check_if_afk_screen():
+                self.hots_menu.press_return_button()
+
+            time.sleep(5)
+
 
 
 class Player(object):

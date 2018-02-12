@@ -35,6 +35,11 @@ class Emulator(object):
         pyautogui.press(keys, interval=random.random())
 
     def paste(self):
+        #pyautogui.keyDown('ctrl')
+        #time.sleep(0.3)
+        #pyautogui.press('v')
+        #time.sleep(0.2)
+        #pyautogui.keyUp('ctrl')
         pyautogui.hotkey('ctrl', 'v')
 
     def hotkey(self, key):
