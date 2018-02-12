@@ -1,4 +1,4 @@
-from transitions import Machine, State
+from transitions import Machine, State, MachineError
 import windows_helpers
 import time
 import logging
@@ -68,6 +68,7 @@ class Game(object):
 
         self.game_side = 'none'
         self.game_map = None
+        self.checking_afk_screen = False
 
         self.machine = Machine(model=self, states=states, transitions=transitions, initial='idle', queued=True)
 
@@ -123,11 +124,10 @@ class Game(object):
         logging.debug('Игра завершена')
 
         player.finish()  # finish playing
-        player_thread._stop()
-        afk_thread._stop()
         self.finish()
 
     def state_finishing_on_enter(self):
+        self.checking_afk_screen = False
         time.sleep(5)
         #  skip mvp screen
         logging.debug('Пропускаю окно mvp')
@@ -154,7 +154,8 @@ class Game(object):
 
 
     def return_to_game_if_afk(self):
-        while True:
+        self.checking_afk_screen = True
+        while self.checking_afk_screen:
             if self.hots_menu.check_if_afk_screen():
                 self.hots_menu.press_return_button()
 
@@ -165,7 +166,7 @@ class Game(object):
 class Player(object):
     def __init__(self, game_side, game_map):
         states = [
-            State(name='idle'),
+            State(name='idle', on_enter=['state_idle_on_enter']),
             State(name='dead', on_enter=['state_dead_on_enter']),
             State(name='thinking', on_enter=['state_thinking_on_enter']),
             State(name='attacking', on_enter=['state_attacking_on_enter']),
@@ -209,6 +210,7 @@ class Player(object):
 
     def state_thinking_on_enter(self):
         logging.debug('Ожидаю начала отсчета времени')
+        self.idle = False
 
         # wait until match timer starts
         self.game_screen.wait_match_timer_start()
@@ -364,4 +366,9 @@ class Player(object):
 
         time.sleep(15)
         self.current_hp - self.game_screen.get_health()
-        self.move()
+
+        if not self.idle:
+            self.move()
+
+    def state_idle_on_enter(self):
+        self.idle = True
