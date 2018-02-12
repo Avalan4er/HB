@@ -188,18 +188,18 @@ class GameScreen(object):
 
     def backpedal(self, game_side):
         if game_side == 'left_side':
-            self.emulator.right_click(600, 500)
+            self.emulator.fast_right_click(600, 500)
         else:
-            self.emulator.right_click(1300, 500)
+            self.emulator.fast_right_click(1300, 500)
 
         time.sleep(1)
         self.emulator.wait_random_delay()
 
     def run_away(self, home_tower):
-        self.emulator.click(home_tower.x, home_tower.y)
+        self.emulator.fast_click(home_tower.x, home_tower.y)
 
         for i in range(0, 5):
-            self.emulator.right_click(1920/2, 500)
+            self.emulator.fast_right_click(1920/2 + random.randint(-100, 100), 500 + random.randint(-100, 100))
             time.sleep(0.2)
 
         self.emulator.hotkey('space')

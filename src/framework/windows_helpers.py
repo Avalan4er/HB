@@ -20,9 +20,15 @@ class Emulator(object):
         pyautogui.moveTo(x, y, random.random(), pyautogui.easeOutQuad)
         pyautogui.click()
 
+    def fast_click(self, x, y):
+        pyautogui.click(x, y)
+
     def right_click(self, x, y):
         pyautogui.moveTo(x, y, random.random(), pyautogui.easeOutQuad)
         pyautogui.rightClick()
+
+    def fast_right_click(self, x, y):
+        pyautogui.rightClick(x, y)
 
     def mouse_move(self, x, y):
         pyautogui.moveTo(x, y, random.random(), pyautogui.easeOutQuad)
@@ -35,11 +41,6 @@ class Emulator(object):
         pyautogui.press(keys, interval=random.random())
 
     def paste(self):
-        #pyautogui.keyDown('ctrl')
-        #time.sleep(0.3)
-        #pyautogui.press('v')
-        #time.sleep(0.2)
-        #pyautogui.keyUp('ctrl')
         pyautogui.hotkey('ctrl', 'v')
 
     def hotkey(self, key):
@@ -60,6 +61,8 @@ class Emulator(object):
     def wait_random_delay(self):
         delay = 1.0 + random.random() * 4.0
         time.sleep(delay)
+
+
 
 
 

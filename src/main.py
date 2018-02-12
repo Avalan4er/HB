@@ -22,12 +22,14 @@ if __name__ == '__main__':
     setup_environment()
     main()
 
-    # import state_machine
-    # from objects import Map, MapStop
+    #import state_machine
+    #from objects import Map, MapStop
 
-    # map = Map('TowersOfDoom', [MapStop(1641, 912), MapStop(1751, 912)], 'towers_of_doom')
-    # player = state_machine.Player('left_side', map)
-    # player.wait_for_game_start()
+    #map = Map('WarheadJunction',
+    #    [MapStop(1591, 865), MapStop(1619, 877), MapStop(1671, 867), MapStop(1763, 868), MapStop(1813, 878), MapStop(1841, 865)],
+    #    'warhead_junction')
+    #player = state_machine.Player('right_side', map)
+    #player.wait_for_game_start()
 
     # from PIL import Image
     # import hots
