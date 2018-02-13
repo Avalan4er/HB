@@ -317,7 +317,7 @@ class Player(object):
         logging.debug('Атакую противника')
         self.game_screen.attack(creep)
 
-        if random.randint(0, 5) == 3:
+        if random.randint(0, 1) == 1:
             logging.debug('Кости сложились удачно')
             self.game_screen.use_random_ability()
             time.sleep(0.5)
