@@ -1,5 +1,5 @@
 BATTLE_NET_EXE_PATH = 'C:\Games\Heroes of the Storm\Heroes of the Storm.exe'  # Путь к Battle.net exe
-HERO_TO_LEVEL = "Рагнарос"  # Имя героя на русском
+HERO_TO_LEVEL = "Блэйз"  # Имя героя на русском
 AI_LEVEL = 'Easy'  # Сложность ботов ( Easy, Medium, Hard )
 
 MATCH_COUNTDOWN = 35  # 35
