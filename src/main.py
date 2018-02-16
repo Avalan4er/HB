@@ -23,7 +23,7 @@ if __name__ == '__main__':
     setup_environment()
     config.read()
 
-    # main()
+    main()
 
     # import state_machine
     # from objects import Map, MapStop

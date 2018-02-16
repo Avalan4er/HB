@@ -4,6 +4,9 @@ import os
 import time
 import config
 import random
+import psutil
+import logging
+import vision_helpers
 
 
 class Color(object):
@@ -63,9 +66,6 @@ class Emulator(object):
         time.sleep(delay)
 
 
-
-
-
 class Pixel(object):
     def search(self, x, y, width, height, rgb_color, tolerance=0):
         for i in range(x, x + width):
@@ -88,7 +88,28 @@ def get_resource_path(filename):
     return os.path.join('resources', 'img', filename)
 
 
+def is_hots_running():
+    """
+    Проверяет, запущен ли HOTS
+    :return: True если HOTS запущен
+    """
+    for pid in psutil.pids():
+        process = psutil.Process(pid)
+        if process.name() == "Heroes of the Storm.exe":
+            return True
+
+    return False
+
+
 def run_hots():
+    """
+    Запускает Heroes of the storm
+    """
+    if is_hots_running():
+        logging.debug('HOTS уже запущен')
+        return None
+
+    logging.debug('Запускаем HOTS')
     # Start Battle.Net client
     subprocess.call([config.Configuration.BATTLE_NET_EXE_PATH])
     time.sleep(5)
@@ -103,9 +124,10 @@ def run_hots():
     highlighted_btn = get_resource_path('play_btn_highlighted.png')
 
     # Search for button on the screen
-    btn_location = pyautogui.locateOnScreen(default_btn)
+    screenshot = Pixel().screen()
+    btn_location = vision_helpers.screenshot_get_template_coords(screenshot, default_btn)
     if btn_location is None:  # if button not found then search for highlighted button
-        btn_location = pyautogui.locateOnScreen(highlighted_btn)
+        btn_location = vision_helpers.screenshot_get_template_coords(screenshot, highlighted_btn)
     if btn_location is None:  # button not found (smth goes terribly wrong)
         raise Exception('Could not find game on screen. Is the game visible?')
     Emulator().click(btn_location[0], btn_location[1])
