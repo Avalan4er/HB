@@ -106,6 +106,8 @@ class LoadingScreen(object):
                 logging.debug('Карта обнаружена: ' + hots_map.name)
                 return hots_map
 
+            logging.debug('Это не ' + hots_map.name)
+
         logging.debug('Карта не определена')
 
     def wait_for_loading(self):

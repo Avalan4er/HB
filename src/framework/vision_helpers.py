@@ -1,5 +1,6 @@
 import cv2
 import numpy
+import logging
 from PIL import Image
 
 
@@ -78,7 +79,12 @@ def find_all_enemy_creeps(screenshot: Image) -> (int, int):
 
 def screenshot_get_template_coords(screenshot: Image, template_path: str) -> (int, int):
     image = cv2.cvtColor(numpy.array(screenshot), cv2.COLOR_RGB2GRAY)
+    if image is None:
+        logging.error('Что то пошло катастрофически не так. Изображения в котором ищется шаблон не создалось')
+
     template = cv2.imread(template_path, 0)
+    if template is None:
+        logging.error('Ошбика чтения файла шаблона ' + template_path)
 
     res = cv2.matchTemplate(image, template, cv2.TM_CCOEFF_NORMED)
     ts = 0.9

@@ -3,8 +3,12 @@
   <component name="ChangeListManager">
     <list default="true" id="9dc5ed4c-d28a-436f-8216-cc47ec18c74d" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change beforePath="$PROJECT_DIR$/src/bot/hots.py" afterPath="$PROJECT_DIR$/src/bot/hots.py" />
+      <change beforePath="$PROJECT_DIR$/src/configuration/constants.py" afterPath="$PROJECT_DIR$/src/configuration/constants.py" />
       <change beforePath="$PROJECT_DIR$/src/framework/vision_helpers.py" afterPath="$PROJECT_DIR$/src/framework/vision_helpers.py" />
+      <change beforePath="$PROJECT_DIR$/src/framework/windows_helpers.py" afterPath="$PROJECT_DIR$/src/framework/windows_helpers.py" />
       <change beforePath="$PROJECT_DIR$/src/main.py" afterPath="$PROJECT_DIR$/src/main.py" />
+      <change beforePath="$PROJECT_DIR$/src/main.spec" afterPath="$PROJECT_DIR$/src/main.spec" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -15,11 +19,23 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="375">
-      <file leaf-file-name="main.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="constants.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/configuration/constants.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="240">
+              <caret line="12" column="17" lean-forward="false" selection-start-line="12" selection-start-column="17" selection-end-line="12" selection-end-column="17" />
+              <folding>
+                <element signature="e#0#9#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="main.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="310">
-              <caret line="51" column="0" lean-forward="false" selection-start-line="51" selection-start-column="0" selection-end-line="51" selection-end-column="0" />
+            <state relative-caret-position="580">
+              <caret line="29" column="79" lean-forward="false" selection-start-line="29" selection-start-column="79" selection-end-line="29" selection-end-column="79" />
               <folding>
                 <element signature="e#0#14#0" expanded="true" />
               </folding>
@@ -27,14 +43,44 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="vision_helpers.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="windows_helpers.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/framework/windows_helpers.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="465">
+              <caret line="128" column="0" lean-forward="false" selection-start-line="128" selection-start-column="0" selection-end-line="128" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="vision_helpers.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/framework/vision_helpers.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-10">
-              <caret line="56" column="71" lean-forward="true" selection-start-line="56" selection-start-column="71" selection-end-line="56" selection-end-column="71" />
+            <state relative-caret-position="280">
+              <caret line="86" column="46" lean-forward="false" selection-start-line="86" selection-start-column="46" selection-end-line="86" selection-end-column="46" />
               <folding>
                 <element signature="e#0#10#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="hots.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/bot/hots.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="140">
+              <caret line="103" column="50" lean-forward="false" selection-start-line="103" selection-start-column="50" selection-end-line="103" selection-end-column="50" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="main.spec" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main.spec">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="260">
+              <caret line="37" column="15" lean-forward="false" selection-start-line="37" selection-start-column="15" selection-end-line="37" selection-end-column="15" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -68,6 +114,7 @@
       <find>MOVEMENT_LONG</find>
       <find>MOVEMENT_SHORT</find>
       <find>CONFIG_FILE_NAME</find>
+      <find>get_resource_path</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -82,11 +129,8 @@
         <option value="$PROJECT_DIR$/src/configuration/settings.py" />
         <option value="$PROJECT_DIR$/src/bot/hots_helpers.py" />
         <option value="$PROJECT_DIR$/src/bot/bot.py" />
-        <option value="$PROJECT_DIR$/src/configuration/constants.py" />
         <option value="$PROJECT_DIR$/src/setup.py" />
         <option value="$PROJECT_DIR$/setup.py" />
-        <option value="$PROJECT_DIR$/src/main.spec" />
-        <option value="$PROJECT_DIR$/src/bot/hots.py" />
         <option value="$PROJECT_DIR$/src/configuration/objects.py" />
         <option value="$PROJECT_DIR$/src/config.ini" />
         <option value="$PROJECT_DIR$/src/configuration/config.py" />
@@ -94,15 +138,18 @@
         <option value="$PROJECT_DIR$/requirements.txt" />
         <option value="$PROJECT_DIR$/src/framework/screenshot_helpers.py" />
         <option value="$PROJECT_DIR$/src/bot/state_machine.py" />
-        <option value="$PROJECT_DIR$/src/framework/windows_helpers.py" />
-        <option value="$PROJECT_DIR$/src/main.py" />
+        <option value="$PROJECT_DIR$/src/bot/hots.py" />
         <option value="$PROJECT_DIR$/src/framework/vision_helpers.py" />
+        <option value="$PROJECT_DIR$/src/main.spec" />
+        <option value="$PROJECT_DIR$/src/framework/windows_helpers.py" />
+        <option value="$PROJECT_DIR$/src/configuration/constants.py" />
+        <option value="$PROJECT_DIR$/src/main.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="419" />
-    <option name="y" value="-12" />
+    <option name="x" value="217" />
+    <option name="y" value="-26" />
     <option name="width" value="933" />
     <option name="height" value="946" />
   </component>
@@ -157,7 +204,25 @@
               <item name="HB" type="b2602c69:ProjectViewProjectNode" />
               <item name="HB" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="bot" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="HB" type="b2602c69:ProjectViewProjectNode" />
+              <item name="HB" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="configuration" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="HB" type="b2602c69:ProjectViewProjectNode" />
+              <item name="HB" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="framework" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="HB" type="b2602c69:ProjectViewProjectNode" />
+              <item name="HB" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="resources" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -527,20 +592,26 @@
       <option name="project" value="LOCAL" />
       <updated>1518796972369</updated>
     </task>
-    <option name="localTasksCounter" value="26" />
+    <task id="LOCAL-00026" summary="Precise creep detection">
+      <created>1518801608119</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1518801608119</updated>
+    </task>
+    <option name="localTasksCounter" value="27" />
     <servers />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1390625" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32979852" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32767764" sideWeight="0.49791667" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3267671" sideWeight="0.49791667" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3297062" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.4319913" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" x="923" y="508" width="982" height="469" />
+      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.4319913" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" x="923" y="508" width="982" height="469" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
@@ -588,17 +659,11 @@
     <MESSAGE value="JSON configuration" />
     <MESSAGE value="Added check before running the process" />
     <MESSAGE value="Fix starting game" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix starting game" />
+    <MESSAGE value="Precise creep detection" />
+    <option name="LAST_COMMIT_MESSAGE" value="Precise creep detection" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/src/main.py</url>
-          <line>51</line>
-          <option name="timeStamp" value="50" />
-        </line-breakpoint>
-      </breakpoints>
       <default-breakpoints>
         <breakpoint type="python-exception">
           <properties notifyOnTerminate="true" exception="BaseException">
@@ -721,13 +786,6 @@
     <entry file="file://$USER_HOME$/anaconda/envs/hb/Lib/codecs.py" />
     <entry file="file://$USER_HOME$/anaconda/envs/hb/Lib/site-packages/PIL/Image.py" />
     <entry file="file://$PROJECT_DIR$/setup.py" />
-    <entry file="file://$PROJECT_DIR$/src/main.spec">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="318">
-          <caret line="16" column="51" lean-forward="false" selection-start-line="16" selection-start-column="51" selection-end-line="16" selection-end-column="51" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/anaconda/envs/hb/Lib/site-packages/transitions/core.py" />
     <entry file="file://$USER_HOME$/anaconda/envs/hb/Lib/site-packages/PIL/ImageGrab.py" />
     <entry file="file://$USER_HOME$/anaconda/envs/untitled1/Lib/genericpath.py" />
@@ -736,14 +794,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/bot/hots.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="20">
-          <caret line="40" column="15" lean-forward="false" selection-start-line="40" selection-start-column="15" selection-end-line="40" selection-end-column="15" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -774,6 +824,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="200">
           <caret line="10" column="18" lean-forward="false" selection-start-line="10" selection-start-column="18" selection-end-line="10" selection-end-column="18" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -789,14 +840,6 @@
           <folding>
             <element signature="e#0#9#0" expanded="false" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/configuration/constants.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="190">
-          <caret line="57" column="27" lean-forward="false" selection-start-line="55" selection-start-column="4" selection-end-line="57" selection-end-column="27" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -835,16 +878,6 @@
         <state />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/framework/windows_helpers.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="109" column="25" lean-forward="true" selection-start-line="109" selection-start-column="25" selection-end-line="109" selection-end-column="25" />
-          <folding>
-            <element signature="e#0#16#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/bot/state_machine.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="220">
@@ -858,22 +891,56 @@
         <state />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main.py">
+    <entry file="file://$PROJECT_DIR$/src/main.spec">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="310">
-          <caret line="51" column="0" lean-forward="false" selection-start-line="51" selection-start-column="0" selection-end-line="51" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#14#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="260">
+          <caret line="37" column="15" lean-forward="false" selection-start-line="37" selection-start-column="15" selection-end-line="37" selection-end-column="15" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/framework/vision_helpers.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-10">
-          <caret line="56" column="71" lean-forward="true" selection-start-line="56" selection-start-column="71" selection-end-line="56" selection-end-column="71" />
+        <state relative-caret-position="280">
+          <caret line="86" column="46" lean-forward="false" selection-start-line="86" selection-start-column="46" selection-end-line="86" selection-end-column="46" />
           <folding>
             <element signature="e#0#10#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/bot/hots.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="140">
+          <caret line="103" column="50" lean-forward="false" selection-start-line="103" selection-start-column="50" selection-end-line="103" selection-end-column="50" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/framework/windows_helpers.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="465">
+          <caret line="128" column="0" lean-forward="false" selection-start-line="128" selection-start-column="0" selection-end-line="128" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/configuration/constants.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="240">
+          <caret line="12" column="17" lean-forward="false" selection-start-line="12" selection-start-column="17" selection-end-line="12" selection-end-column="17" />
+          <folding>
+            <element signature="e#0#9#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="580">
+          <caret line="29" column="79" lean-forward="false" selection-start-line="29" selection-start-column="79" selection-end-line="29" selection-end-column="79" />
+          <folding>
+            <element signature="e#0#14#0" expanded="true" />
           </folding>
         </state>
       </provider>

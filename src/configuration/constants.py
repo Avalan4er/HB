@@ -1,10 +1,19 @@
 import os
+import sys
+import logging
 from objects import Map, MapStop
 
 WAIT_BEFORE_GAME_STARTS = 30
 
 ABILITY_KEYS = ['q', 'w', 'e']
-IMAGES_PATH = os.path.join('resources', 'img')
+
+try:
+    # PyInstaller creates a temp folder and stores path in _MEIPASS
+    base_path = sys._MEIPASS
+except Exception:
+    base_path = os.path.abspath(".")
+
+IMAGES_PATH = os.path.join(base_path, 'resources', 'img')
 LOADING_SCREEN_TEMPLATES_PATH = os.path.join(IMAGES_PATH, 'loading_screen')
 MAPS = [
     Map('Hanamura',

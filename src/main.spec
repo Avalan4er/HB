@@ -1,4 +1,11 @@
 # -*- mode: python -*-
+# how to build exe:
+# * open anaconda prompt
+# * actvate environment (activate hb)
+# * install pyinstaller if not installed (pip install pyinstaller)
+# * cd to src folder
+# * execute command: pyinstaller -F main.spec
+
 
 import os
 
@@ -26,8 +33,8 @@ a = Analysis([
              ],
              binaries=[],
              datas=[
-                ( os.path.join(PROJECT_PATH, 'resources\\img\\*.png'), 'src\\resources\\img'),
-                ( os.path.join(PROJECT_PATH, 'resources\\img\\loading_screen\\*.png'), 'src\\resources\\img\\loading_screen')
+                ( os.path.join(PROJECT_PATH, 'resources\\img\\*.png'), 'resources\\img'),
+                ( os.path.join(PROJECT_PATH, 'resources\\img\\loading_screen\\*.png'), 'resources\\img\\loading_screen')
              ],
              hiddenimports=[],
              hookspath=[],

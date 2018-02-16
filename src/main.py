@@ -3,6 +3,7 @@ import state_machine
 import random
 import sys
 import config
+import constants
 
 
 def setup_environment():
@@ -23,7 +24,12 @@ if __name__ == '__main__':
     setup_environment()
     config.read()
 
-    #main()
+    logging.debug('Базовая директория ресурсов: ' + constants.base_path)
+    logging.debug('Путь до HOTS: ' + config.Configuration.BATTLE_NET_EXE_PATH)
+    logging.debug('Уровень ИИ: ' + config.Configuration.AI_LEVEL)
+    logging.debug('Прокачиваемый герой: ' + config.Configuration.HERO_TO_LEVEL)
+
+    main()
 
     # import state_machine
     # from objects import Map, MapStop
@@ -44,9 +50,9 @@ if __name__ == '__main__':
     #   'garden_of_terror')
 
 
-    import vision_helpers
-    from PIL import Image
+    # import vision_helpers
+    # from PIL import Image
 
-    screenshot = Image.open('creeps1.png')
-    coords = list(vision_helpers.find_all_enemy_creeps(screenshot))
-    print('t')
+    # screenshot = Image.open('creeps1.png')
+    # coords = list(vision_helpers.find_all_enemy_creeps(screenshot))
+    # print('t')

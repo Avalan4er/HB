@@ -86,10 +86,6 @@ class Pixel(object):
         return pyautogui.grab()
 
 
-def get_resource_path(filename: str) -> str:
-    return os.path.join('resources', 'img', filename)
-
-
 def is_hots_running():
     """
     Проверяет, запущен ли HOTS
@@ -129,8 +125,7 @@ def run_hots():
         time.sleep(1)
 
         # Button fragments to find
-        default_btn = get_resource_path('play_btn_default.png')
-        highlighted_btn = get_resource_path('play_btn_highlighted.png')
+        default_btn = os.path.join(constants.IMAGES_PATH, 'play_btn_default.png')
 
         # Search for button on the screen
         screenshot = Pixel().screen()
