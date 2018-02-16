@@ -21,7 +21,7 @@ a = Analysis([
                 'configuration\\config.py',
                 'configuration\\constants.py',
                 'configuration\\objects.py',
-                'framework\\screenshot_helpers.py',
+                'framework\\match_result_helpers.py',
                 'framework\\vision_helpers.py',
                 'framework\\windows_helpers.py'
             ],

@@ -4,9 +4,9 @@ import time
 import logging
 import hots
 import config
-import constants
 import random
 import threading
+import match_result_helpers
 from datetime import datetime
 
 
@@ -140,6 +140,14 @@ class Game(object):
         logging.debug('Жду загрузки')
         self.hots_loading_screen.wait_for_loading()
         time.sleep(5)
+
+        # сохраняем результат игры
+        screenshot = windows_helpers.Pixel().screen()
+        screenshot_path = match_result_helpers.save_match_result(screenshot)
+
+        # отправляем отчет на email
+        if screenshot_path is not None and config.Configuration.SEND_EMAIL_ON_MATCH_END:
+            match_result_helpers.send_match_result(screenshot_path)
 
         # skip experience screen
         logging.debug('Пропускаю окно начисления опыта')
