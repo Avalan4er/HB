@@ -1,9 +1,10 @@
 import logging
-import state_machine
 import random
 import sys
+
 import config
 import constants
+import state_machine
 
 
 def setup_environment():
@@ -62,6 +63,6 @@ if __name__ == '__main__':
     # import vision_helpers
     # from PIL import Image
 
-    # screenshot = Image.open('creeps1.png')
+    # screenshot = Image.open('')
     # coords = list(vision_helpers.find_all_enemy_creeps(screenshot))
     # print('t')
