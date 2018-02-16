@@ -28,34 +28,52 @@ def find_all_enemy_creeps(screenshot: Image) -> (int, int):
         numpy.array(screenshot),
         cv2.COLOR_RGB2BGR)
 
+    image = screenshot.copy()
+
     #  закрашиваем некоторые части экрана которые создают кучу неправильных контуров
-    cv2.rectangle(screenshot, (1490, 750), (1920, 1080), (0, 0, 0), -1)  # закрашиваем миникарту
-    cv2.rectangle(screenshot, (360, 0), (1546, 120), (0, 0, 0), -1)  # закрашиваем панель героев
+    cv2.rectangle(image, (1490, 750), (1920, 1080), (255, 255, 255), -1)  # закрашиваем миникарту
+    cv2.rectangle(image, (360, 0), (1546, 120), (255, 255, 255), -1)  # закрашиваем панель героев
+
+    image = cv2.bitwise_not(image)
 
     # filter health bar color
-    mask_enemy_health = cv2.inRange(screenshot, numpy.array([55, 0, 187]), numpy.array([63, 0, 215]))
-    mask = mask_enemy_health  # build mask
-    res = cv2.bitwise_and(screenshot, screenshot, mask=mask)  # apply mask
+    mask_enemy_hero_health = cv2.inRange(image, numpy.array([206, 220, 219]), numpy.array([208, 222, 221]))
+    mask_enemy_creep_health = cv2.inRange(image, numpy.array([255, 255, 255]), numpy.array([255, 255, 255]))
+    mask = mask_enemy_creep_health | mask_enemy_hero_health  # build mask
+    res = cv2.bitwise_and(image, image, mask=mask)  # apply mask
 
     # find contours
     image_grayscale = cv2.cvtColor(res, cv2.COLOR_BGR2GRAY)  # convert filtered img to greyscale
     ret, thresh = cv2.threshold(image_grayscale, 1, 255, cv2.THRESH_BINARY)  # then convert to black/white
     im2, contours, hierarchy = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)  # find contours
 
+    enemy_creep_plate_color = numpy.array([55, 0, 187])     # цвет индикатора здоровья врага
+    result = []
+    for contour in contours:
+        if cv2.contourArea(contour) < 30:
+            continue
+
+        x, y, w, h = cv2.boundingRect(contour)
+        if ((w in range(53,55) and h in range(5,7)) or          # creep
+            (w in range(146, 150) and h in range(10, 12)) or    # fort
+            (w in range(123, 125) and h in range(11, 13)) or    # hero
+            (w in range(134, 136) and h in range(6, 8))):       # gates
+
+            # если цвет плашки крипа вражеский
+            for delta_color_component in numpy.subtract(screenshot[y + 1, x + 1], enemy_creep_plate_color):
+                if abs(delta_color_component) > 3: # проверка если цвета пикселя и эталона различаются больше чем на 3
+                    break   # то такой контур нам не подходит
+
+                if (x, y) not in result:
+                    result.append((x, y))
+                    # cv2.drawContours(screenshot, [contour], -1, (0, 255, 0), 1)
+
     # cv2.namedWindow('img')
-    # cv2.drawContours(screenshot, contours, -1, (0, 255, 0), 1)
     # cv2.imshow('img', screenshot)
     # cv2.waitKey(0)
     # cv2.destroyAllWindows()
 
-    for contour in contours:
-        area = cv2.contourArea(contour)
-        if 50 < area < 400:
-            x, y, w, h = cv2.boundingRect(contour)
-            if 3 < h < 15:
-                yield x, y  # x + 300, y + 100
-
-    return None
+    return result
 
 
 def screenshot_get_template_coords(screenshot: Image, template_path: str) -> (int, int):

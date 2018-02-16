@@ -23,7 +23,7 @@ if __name__ == '__main__':
     setup_environment()
     config.read()
 
-    main()
+    #main()
 
     # import state_machine
     # from objects import Map, MapStop
@@ -43,6 +43,10 @@ if __name__ == '__main__':
     #    [MapStop(1552, 909), MapStop(1584, 904), MapStop(1641, 909), MapStop(1751, 899), MapStop(1807, 905), MapStop(1839, 896)],
     #   'garden_of_terror')
 
-    # screenshot = Image.open('creeps.png')
-    # coords = list(vision_helpers.find_all_enemy_creeps(screenshot))
-    # print('t')
+
+    import vision_helpers
+    from PIL import Image
+
+    screenshot = Image.open('creeps1.png')
+    coords = list(vision_helpers.find_all_enemy_creeps(screenshot))
+    print('t')
