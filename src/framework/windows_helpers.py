@@ -7,37 +7,38 @@ import random
 import psutil
 import logging
 import vision_helpers
+from PIL import Image
 
 
 class Color(object):
-    def to_rgb(self, hex):
-        return tuple(int(hex[i:i + 2], 16) for i in (0, 2, 4))
+    def to_rgb(self, hex_color: int) -> (float, float, float):
+        return tuple(int(hex_color[i:i + 2], 16) for i in (0, 2, 4))
 
 
 class Emulator(object):
     def __init__(self):
-        random.seed(42)
+        random.seed(42142151)
 
     # mouse
-    def click(self, x, y):
+    def click(self, x: int, y: int):
         pyautogui.moveTo(x, y, random.random(), pyautogui.easeOutQuad)
         pyautogui.click()
 
-    def fast_click(self, x, y):
+    def fast_click(self, x: int, y: int):
         pyautogui.click(x, y)
 
-    def right_click(self, x, y):
+    def right_click(self, x: int, y: int):
         pyautogui.moveTo(x, y, random.random(), pyautogui.easeOutQuad)
         pyautogui.rightClick()
 
-    def fast_right_click(self, x, y):
+    def fast_right_click(self, x: int, y: int):
         pyautogui.rightClick(x, y)
 
-    def mouse_move(self, x, y):
+    def mouse_move(self, x: int, y: int):
         pyautogui.moveTo(x, y, random.random(), pyautogui.easeOutQuad)
 
     # keyboard
-    def write(self, word):
+    def write(self, word: str):
         pyautogui.typewrite(word, random.random())
 
     def press_key(self, keys):
@@ -46,16 +47,16 @@ class Emulator(object):
     def paste(self):
         pyautogui.hotkey('ctrl', 'v')
 
-    def hotkey(self, key):
+    def hotkey(self, key: str):
         pyautogui.hotkey(key)
 
-    def select_talent(self, talent_number):
+    def select_talent(self, talent_number: int):
         pyautogui.keyDown('ctrl')
         time.sleep(0.2)
         pyautogui.press(talent_number.__str__())
         pyautogui.keyUp('ctrl')
 
-    def use_ability(self, ability_key):
+    def use_ability(self, ability_key: str):
         pyautogui.keyDown(ability_key)
         time.sleep(0.2)
         pyautogui.keyUp(ability_key)
@@ -67,24 +68,24 @@ class Emulator(object):
 
 
 class Pixel(object):
-    def search(self, x, y, width, height, rgb_color, tolerance=0):
+    def search(self, x: int, y: int, width: int, height: int, rgb_color: (float, float, float), tolerance=0) -> (int, int):
         for i in range(x, x + width):
             for k in range(y, y + height):
                 if pyautogui.pixelMatchesColor(i, k, rgb_color, tolerance):
                     return i, k
         return None
 
-    def matches(self, x, y, rgb_color, tolerance=0):
+    def matches(self, x: int, y: int, rgb_color: (float, float, float), tolerance=0) -> bool:
         return pyautogui.pixelMatchesColor(x, y, rgb_color, tolerance)
 
-    def color(self, x, y):
+    def color(self, x: int, y: int) -> (float, float, float):
         return pyautogui.pixel(x, y)
 
-    def screen(self):
+    def screen(self) -> Image:
         return pyautogui.grab()
 
 
-def get_resource_path(filename):
+def get_resource_path(filename: str) -> str:
     return os.path.join('resources', 'img', filename)
 
 

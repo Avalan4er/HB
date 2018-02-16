@@ -1,14 +1,14 @@
 from pyautogui import screenshotUtil
+from PIL import Image
 
-class screenshot(object):
 
-    def get_pixel(self, x, y):
-        return screenshotUtil.pixel(x,y)
+class Screenshot(object):
 
-    def capture(self):
+    def get_pixel(self, x: int, y: int) -> (float, float, float):
+        return screenshotUtil.pixel(x, y)
+
+    def capture(self) -> Image:
         return screenshotUtil.screenshot()
 
-    def matches_color(self, x, y, color):
+    def matches_color(self, x: int, y: int, color: (float, float, float)) -> bool:
         return screenshotUtil.pixelMatchesColor(x, y, color)
-
-
