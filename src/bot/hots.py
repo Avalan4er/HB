@@ -79,7 +79,8 @@ class MainMenu(object):
 
     def check_if_afk_screen(self):
         screenshot = self.pixel.screen().crop((750, 590, 960, 660))
-        return vision_helpers.screenshot_contains_template(screenshot, os.path.join(constants.IMAGES_PATH, 'btn_return.png'))
+        return vision_helpers.screenshot_contains_template(screenshot,
+                                                           os.path.join(constants.IMAGES_PATH, 'btn_return.png'))
 
     def press_return_button(self):
         self.emulator.click(855, 622)
@@ -146,12 +147,11 @@ class GameScreen(object):
             player_coords = (1920 / 2, 500)
             creeps = sorted(
                 enemy_creeps,
-                key=lambda creep: math.hypot(creep[0] - player_coords[0], creep[1] - player_coords[1]))
+                key=lambda creep: windows_helpers.distance((player_coords[0], player_coords[1]), (creep[0], creep[1])))
             creep_coords = creeps[0]
 
         if creep_coords is not None:
             return EnemyCreep(creep_coords[0], creep_coords[1])
-
 
     def detect_death(self):
         logging.debug('Определяю умер ли персонаж')
@@ -167,11 +167,11 @@ class GameScreen(object):
 
     def move_to(self, x, y):
         self.emulator.click(x, y)
-        self.emulator.right_click(1920 / 2, 1080 / 2)
+        self.emulator.right_click(int(1920 / 2) + random.randint(-10, 10), int(1080 / 2) + random.randint(-10, 10))
         self.emulator.hotkey('space')
 
     def attack(self, creep):
-        self.emulator.mouse_move(creep.x + random.randint(-5, 5), creep.y + 50 + random.randint(-5,5))
+        self.emulator.mouse_move(creep.x + random.randint(-5, 5), creep.y + 50 + random.randint(-5, 5))
         self.emulator.press_key('a')
 
     def stop(self):
@@ -201,7 +201,7 @@ class GameScreen(object):
         self.emulator.fast_click(home_tower.x, home_tower.y)
 
         for i in range(0, 5):
-            self.emulator.fast_right_click(1920/2 + random.randint(-100, 100), 500 + random.randint(-100, 100))
+            self.emulator.fast_right_click(1920 / 2 + random.randint(-100, 100), 500 + random.randint(-100, 100))
             time.sleep(0.2)
 
         self.emulator.hotkey('space')

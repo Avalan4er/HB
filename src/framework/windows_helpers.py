@@ -8,6 +8,7 @@ import psutil
 import logging
 import vision_helpers
 import constants
+import math
 from PIL import Image
 
 
@@ -97,6 +98,10 @@ def is_hots_running():
             return True
 
     return False
+
+
+def distance(p1: (int, int), p2: (int, int)) -> float:
+    return math.sqrt(((p1[0] - p2[0]) ** 2) + ((p1[1] - p2[1]) ** 2))
 
 
 def run_hots():

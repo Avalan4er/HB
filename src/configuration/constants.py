@@ -3,9 +3,9 @@ import sys
 import logging
 from objects import Map, MapStop
 
-WAIT_BEFORE_GAME_STARTS = 30
+WAIT_BEFORE_GAME_STARTS = 60
 
-ABILITY_KEYS = ['q', 'w', 'e']
+ABILITY_KEYS = ['q', 'w', 'e', 'r']
 
 try:
     # PyInstaller creates a temp folder and stores path in _MEIPASS
