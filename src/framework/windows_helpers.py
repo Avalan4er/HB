@@ -90,7 +90,7 @@ def get_resource_path(filename):
 
 def run_hots():
     # Start Battle.Net client
-    subprocess.call([config.BATTLE_NET_EXE_PATH])
+    subprocess.call([config.Configuration.BATTLE_NET_EXE_PATH])
     time.sleep(5)
 
     # Maximize Battle.Net client

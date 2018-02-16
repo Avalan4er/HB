@@ -2,6 +2,7 @@ import logging
 import state_machine
 import random
 import sys
+import config
 
 
 def setup_environment():
@@ -20,16 +21,18 @@ if __name__ == '__main__':
     # logging.disable(logging.DEBUG) # uncomment to block debug log messages
     random.seed(12331551)
     setup_environment()
-    main()
+    config.read()
 
-    #import state_machine
-    #from objects import Map, MapStop
+    # main()
 
-    #map = Map('WarheadJunction',
+    # import state_machine
+    # from objects import Map, MapStop
+
+    # map = Map('WarheadJunction',
     #    [MapStop(1591, 865), MapStop(1619, 877), MapStop(1671, 867), MapStop(1763, 868), MapStop(1813, 878), MapStop(1841, 865)],
     #    'warhead_junction')
-    #player = state_machine.Player('right_side', map)
-    #player.wait_for_game_start()
+    # player = state_machine.Player('right_side', map)
+    # player.wait_for_game_start()
 
     # from PIL import Image
     # import hots
@@ -43,5 +46,3 @@ if __name__ == '__main__':
     # screenshot = Image.open('creeps.png')
     # coords = list(vision_helpers.find_all_enemy_creeps(screenshot))
     # print('t')
-
-

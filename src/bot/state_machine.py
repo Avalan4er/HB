@@ -82,12 +82,12 @@ class Game(object):
     def state_selecting_game_mode_on_enter(self):
         self.hots_menu.select_alies_ai_mode()
         self.emulator.wait_random_delay()
-        self.hots_menu.select_ai_level(config.AI_LEVEL)
+        self.hots_menu.select_ai_level(config.Configuration.AI_LEVEL)
         self.emulator.wait_random_delay()
         self.select_hero()
 
     def state_selecting_hero_on_enter(self):
-        self.hots_menu.select_hero(config.HERO_TO_LEVEL)
+        self.hots_menu.select_hero(config.Configuration.HERO_TO_LEVEL)
         self.emulator.wait_random_delay()
         self.start_game()
 
@@ -223,7 +223,7 @@ class Player(object):
 
         logging.debug('Жду начала матча')
         # wait until match begins
-        time.sleep(config.MATCH_COUNTDOWN)
+        time.sleep(config.Configuration.MATCH_COUNTDOWN)
 
         logging.debug('Иду воевать!')
         self.move()
@@ -237,7 +237,7 @@ class Player(object):
             self.rest()
             return None
 
-        movement_length = config.MOVEMENT_LONG
+        movement_length = config.Configuration.MOVEMENT_LONG
         screenshot = self.game_screen.pixel.screen()
         current_tower_index = self.current_tower
         frontline_tower_index = self.map_screen.get_frontline_tower_index(screenshot)
@@ -253,7 +253,7 @@ class Player(object):
         else:  # если уже на фронте или дальше
             next_tower_index = current_tower_index + 1
             if self.map_screen.check_enemy_tower_alive(screenshot, next_tower_index):  # если следующий вражеский тавер жив
-                movement_length = config.MOVEMENT_SHORT # будем двигаться не доходя до башни
+                movement_length = config.Configuration.MOVEMENT_SHORT # будем двигаться не доходя до башни
                 destination_tower_index = next_tower_index
                 logging.debug('Двигаемся на пару шагов вперед к живой башне врага')
             else:  # в противном случае делаем полный переход
@@ -296,7 +296,7 @@ class Player(object):
             time.sleep(1)
 
         logging.debug('Движение закончено, целей не обнаружено')
-        if movement_length == config.MOVEMENT_LONG:  # если дошли до следущей башни
+        if movement_length == config.Configuration.MOVEMENT_LONG:  # если дошли до следущей башни
             self.current_tower = destination_tower_index  # то повышаем индекс
 
         self.game_screen.stop()
