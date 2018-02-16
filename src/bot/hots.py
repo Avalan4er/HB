@@ -171,7 +171,7 @@ class GameScreen(object):
         self.emulator.hotkey('space')
 
     def attack(self, creep):
-        self.emulator.mouse_move(creep.x + 30, creep.y + 50)
+        self.emulator.mouse_move(creep.x + random.randint(-5, 5), creep.y + 50 + random.randint(-5,5))
         self.emulator.press_key('a')
 
     def stop(self):

@@ -66,7 +66,7 @@ def find_all_enemy_creeps(screenshot: Image) -> (int, int):
                     break   # то такой контур нам не подходит
 
                 if (x, y) not in result:
-                    result.append((x, y))
+                    result.append((x + (w /2), y))
                     # cv2.drawContours(screenshot, [contour], -1, (0, 255, 0), 1)
 
     # cv2.namedWindow('img')
