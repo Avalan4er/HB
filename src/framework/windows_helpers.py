@@ -7,6 +7,7 @@ import random
 import psutil
 import logging
 import vision_helpers
+import constants
 from PIL import Image
 
 
@@ -96,7 +97,7 @@ def is_hots_running():
     """
     for pid in psutil.pids():
         process = psutil.Process(pid)
-        if process.name() == "Heroes of the Storm.exe":
+        if 'Heroes' in process.name():
             return True
 
     return False
@@ -107,28 +108,36 @@ def run_hots():
     Запускает Heroes of the storm
     """
     if is_hots_running():
-        logging.debug('HOTS уже запущен')
-        return None
+        logging.debug('HOTS уже запущен. Переключаюсь на него')
+        hots_window = pyautogui.getWindow('Heroes of the Storm')
+        hots_window.minimize()
+        hots_window.restore()
+        time.sleep(1)
 
-    logging.debug('Запускаем HOTS')
-    # Start Battle.Net client
-    subprocess.call([config.Configuration.BATTLE_NET_EXE_PATH])
-    time.sleep(5)
+    else:
+        logging.debug('Запускаем HOTS')
+        # Start Battle.Net client
+        subprocess.call([config.Configuration.BATTLE_NET_EXE_PATH])
+        time.sleep(5)
 
-    # Maximize Battle.Net client
-    battle_net_window = pyautogui.getWindow('Blizzard Battle.net')
-    battle_net_window.set_position(0, 0, 800, 600)
-    battle_net_window.maximize()
+        # Maximize Battle.Net client
+        battle_net_window = pyautogui.getWindow('Blizzard Battle.net')
+        battle_net_window.set_position(0, 0, 800, 600)
+        time.sleep(1)
 
-    # Button fragments to find
-    default_btn = get_resource_path('play_btn_default.png')
-    highlighted_btn = get_resource_path('play_btn_highlighted.png')
+        battle_net_window.maximize()
+        time.sleep(1)
 
-    # Search for button on the screen
-    screenshot = Pixel().screen()
-    btn_location = vision_helpers.screenshot_get_template_coords(screenshot, default_btn)
-    if btn_location is None:  # if button not found then search for highlighted button
-        btn_location = vision_helpers.screenshot_get_template_coords(screenshot, highlighted_btn)
-    if btn_location is None:  # button not found (smth goes terribly wrong)
-        raise Exception('Could not find game on screen. Is the game visible?')
-    Emulator().click(btn_location[0], btn_location[1])
+        # Button fragments to find
+        default_btn = get_resource_path('play_btn_default.png')
+        highlighted_btn = get_resource_path('play_btn_highlighted.png')
+
+        # Search for button on the screen
+        screenshot = Pixel().screen()
+        btn_location = vision_helpers.screenshot_get_template_coords(screenshot, default_btn)
+        if btn_location is None:  # button not found (smth goes terribly wrong)
+            raise Exception('Could not find game on screen. Is the game visible?')
+        Emulator().click(btn_location[0], btn_location[1])
+
+        logging.debug('HOTS запускается, жду ' + constants.WAIT_BEFORE_GAME_STARTS.__str__() + ' секунд')
+        time.sleep(constants.WAIT_BEFORE_GAME_STARTS)

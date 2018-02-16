@@ -28,9 +28,6 @@ class Application(object):
         logging.debug('Запускаю HOTS')
         windows_helpers.run_hots()
 
-        logging.debug('HOTS запускается, жду ' + constants.WAIT_BEFORE_GAME_STARTS.__str__() + ' секунд')
-        time.sleep(constants.WAIT_BEFORE_GAME_STARTS)
-
         game = Game()
         game.switch_game_state()
 
