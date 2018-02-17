@@ -19,8 +19,9 @@ a = Analysis([
                 'bot\\hots.py',
                 'bot\\state_machine.py',
                 'configuration\\config.py',
+                'configuration\\config_objects.py',
                 'configuration\\constants.py',
-                'configuration\\objects.py',
+                'framework\\framework_objects.py',
                 'framework\\match_result_helpers.py',
                 'framework\\vision_helpers.py',
                 'framework\\windows_helpers.py'
