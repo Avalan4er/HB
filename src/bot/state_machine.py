@@ -250,7 +250,7 @@ class Player(object):
         current_tower_index = self.current_tower
         frontline_tower_index = self.map_screen.get_frontline_tower_index(screenshot)
 
-
+        # определение цели движения
         if current_tower_index < frontline_tower_index:  # если мы еще не на фронте
             destination_tower_index = frontline_tower_index
             logging.debug('Движение к фронтовой башне')
@@ -268,7 +268,6 @@ class Player(object):
                 destination_tower_index = next_tower_index
                 logging.debug('Двигаемся к мертвой башне врага')
 
-        #  определяем к какой башне движемся
         if destination_tower_index >= len(self.map_screen.towers):
             destination_tower_index = len(self.map_screen.towers) - 1
 
@@ -330,8 +329,7 @@ class Player(object):
             self.game_screen.use_random_ability()
             time.sleep(0.5)
 
-
-        for i in range(1, random.randint(2, 6)):
+        for i in range(1, random.randint(2, 3)):
             time.sleep(0.5)
             health = self.game_screen.get_health()
             delta_health = self.current_hp - health
@@ -372,6 +370,10 @@ class Player(object):
 
         self.game_screen.teleport()
         self.current_tower = 0
+
+        if self.game_screen.detect_death():
+            self.die()
+            return None
 
         time.sleep(15)
         self.current_hp - self.game_screen.get_health()

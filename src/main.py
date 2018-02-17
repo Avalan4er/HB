@@ -30,7 +30,7 @@ if __name__ == '__main__':
     logging.debug('Уровень ИИ: ' + config.Configuration.AI_LEVEL)
     logging.debug('Прокачиваемый герой: ' + config.Configuration.HERO_TO_LEVEL)
 
-    # main()
+    main()
 
 
 
@@ -60,9 +60,9 @@ if __name__ == '__main__':
 
     # test CV
 
-    import vision_helpers
-    from PIL import Image
+    # import vision_helpers
+    # from PIL import Image
 
-    screenshot = Image.open('testimage.png')
-    coords = list(vision_helpers.map_get_player_coords(screenshot))
-    print('t')
+    # screenshot = Image.open('')
+    # coords = list(vision_helpers.detect_units(screenshot))
+    # print('t')
