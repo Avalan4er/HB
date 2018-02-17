@@ -15,7 +15,6 @@ def is_color_in_range(color, range_center, range_width=3) -> bool:
 
     return True
 
-
 def get_health(screenshot: Image) -> float:
     screenshot = cv2.cvtColor(
         numpy.array(screenshot),
@@ -36,7 +35,7 @@ def get_health(screenshot: Image) -> float:
     return 0
 
 
-def detect_units(screenshot: Image) -> [framework_objects.Unit]:
+def detect_units(screenshot: Image):
     screenshot = cv2.cvtColor(
         numpy.array(screenshot),
         cv2.COLOR_RGB2BGR)
@@ -57,8 +56,8 @@ def detect_units(screenshot: Image) -> [framework_objects.Unit]:
 
     # find contours
     image_grayscale = cv2.cvtColor(res, cv2.COLOR_BGR2GRAY)  # convert filtered img to greyscale
-    ret, thresh = cv2.threshold(image_grayscale, 1, 255, cv2.THRESH_BINARY)  # then convert to black/white
-    im2, contours, hierarchy = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)  # find contours
+    _, image_bw = cv2.threshold(image_grayscale, 1, 255, cv2.THRESH_BINARY)  # then convert to black/white
+    _, contours, hierarchy = cv2.findContours(image_bw, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)  # find contours
 
     enemy_creep_plate_color = numpy.array([55, 0, 187])     # цвет индикатора здоровья врага
     result = []
@@ -99,7 +98,37 @@ def detect_units(screenshot: Image) -> [framework_objects.Unit]:
     return result
 
 
-def screenshot_get_template_coords(screenshot: Image, template_path: str) -> (int, int):
+def map_get_player_coords(screenshot: Image):
+    screenshot = cv2.cvtColor(
+        numpy.array(screenshot),
+        cv2.COLOR_RGB2BGR)
+
+    image = screenshot.copy()
+
+    #  закрашиваем все кроме миникарты
+    cv2.rectangle(image, (0, 0), (1920, 720), (0, 0, 0), -1)
+    cv2.rectangle(image, (0, 720), (1490, 1080), (0, 0, 0), -1)
+
+    # filter health bar color
+    mask_enemy_hero_health = cv2.inRange(image, numpy.array([0, 100, 30]), numpy.array([60, 255, 100]))
+    mask = mask_enemy_hero_health  # build mask
+    res = cv2.bitwise_and(image, image, mask=mask)  # apply mask
+
+    # find contours
+    image_grayscale = cv2.cvtColor(res, cv2.COLOR_BGR2GRAY)  # convert filtered img to greyscale
+    _, image_bw = cv2.threshold(image_grayscale, 1, 255, cv2.THRESH_BINARY)  # then convert to black/white
+    _, contours, hierarchy = cv2.findContours(image_bw, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)  # find contours
+
+    for contour in contours:
+        area = cv2.contourArea(contour)
+        if 300 < area < 320:
+            x, y, w, h = cv2.boundingRect(contour)
+            return framework_objects.Point(x + (w / 2), y + (h / 2))
+
+    return None
+
+
+def screenshot_find_templates(screenshot: Image, template_path: str):
     image = cv2.cvtColor(numpy.array(screenshot), cv2.COLOR_RGB2GRAY)
     if image is None:
         logging.error('Что то пошло катастрофически не так. Изображения в котором ищется шаблон не создалось')
@@ -112,13 +141,18 @@ def screenshot_get_template_coords(screenshot: Image, template_path: str) -> (in
     ts = 0.9
     loc = numpy.where(res >= ts)
 
+    result = []
     for pt in zip(*loc[::-1]):
-        return pt
+        point = framework_objects.Point(pt[0], pt[1])
+        if point not in result:
+            result.append(point)
+
+    return result
 
 
 def screenshot_contains_template(screenshot: Image, template_path: str) -> bool:
-    point = screenshot_get_template_coords(screenshot, template_path)
-    if point is not None:
+    template_coordinates = screenshot_find_templates(screenshot, template_path)
+    if len(template_coordinates) > 0:
         return True
 
     return False

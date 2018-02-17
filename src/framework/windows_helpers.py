@@ -137,10 +137,10 @@ def run_hots():
 
         # Search for button on the screen
         screenshot = Pixel().screen()
-        btn_location = vision_helpers.screenshot_get_template_coords(screenshot, default_btn)
-        if btn_location is None:  # button not found (smth goes terribly wrong)
+        btn_locations = vision_helpers.screenshot_find_templates(screenshot, default_btn)
+        if len(btn_locations) > 0:  # button not found (smth goes terribly wrong)
             raise Exception('Could not find game on screen. Is the game visible?')
-        Emulator().click(btn_location[0], btn_location[1])
+        Emulator().click(btn_locations[0].x, btn_locations[0].y)
 
         logging.debug('HOTS запускается, жду ' + constants.WAIT_BEFORE_GAME_STARTS.__str__() + ' секунд')
         time.sleep(constants.WAIT_BEFORE_GAME_STARTS)
