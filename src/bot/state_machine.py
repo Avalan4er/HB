@@ -198,6 +198,7 @@ class Player(object):
 
             {'trigger': 'die', 'source': 'attacking', 'dest': 'dead'},
             {'trigger': 'die', 'source': 'moving', 'dest': 'dead'},
+            {'trigger': 'die', 'source': 'resting', 'dest': 'dead'},
 
             {'trigger': 'finish', 'source': 'dead', 'dest': 'idle'},
             {'trigger': 'finish', 'source': 'attacking', 'dest': 'idle'},
