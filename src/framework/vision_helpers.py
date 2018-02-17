@@ -1,7 +1,19 @@
+import logging
+
 import cv2
 import numpy
-import logging
 from PIL import Image
+
+import framework_objects
+
+
+def is_color_in_range(color, range_center, range_width=3) -> bool:
+    for delta_color_component in numpy.subtract(color, range_center):
+        if abs(
+                delta_color_component) > range_width:  # проверка если цвета пикселя и эталона различаются больше чем на 3
+            return False  # то такой контур нам не подходит
+
+    return True
 
 
 def get_health(screenshot: Image) -> float:
@@ -24,7 +36,7 @@ def get_health(screenshot: Image) -> float:
     return 0
 
 
-def find_all_enemy_creeps(screenshot: Image) -> (int, int):
+def detect_units(screenshot: Image) -> [framework_objects.Unit]:
     screenshot = cv2.cvtColor(
         numpy.array(screenshot),
         cv2.COLOR_RGB2BGR)
@@ -55,19 +67,29 @@ def find_all_enemy_creeps(screenshot: Image) -> (int, int):
             continue
 
         x, y, w, h = cv2.boundingRect(contour)
-        if ((w in range(53,55) and h in range(5,7)) or          # creep
-            (w in range(146, 150) and h in range(10, 12)) or    # fort
-            (w in range(123, 125) and h in range(11, 13)) or    # hero
-            (w in range(134, 136) and h in range(6, 8))):       # gates
+        unit = framework_objects.Unit(framework_objects.Point(x + (w / 2), y))
 
-            # если цвет плашки крипа вражеский
-            for delta_color_component in numpy.subtract(screenshot[y + 1, x + 1], enemy_creep_plate_color):
-                if abs(delta_color_component) > 3: # проверка если цвета пикселя и эталона различаются больше чем на 3
-                    break   # то такой контур нам не подходит
+        if is_color_in_range(screenshot[y + 1, x + 1], enemy_creep_plate_color):
+            unit.is_enemy = True
 
-                if (x, y) not in result:
-                    result.append((x + (w /2), y))
-                    # cv2.drawContours(screenshot, [contour], -1, (0, 255, 0), 1)
+        if w in range(53, 55) and h in range(5, 7):  # creep
+            unit.type = framework_objects.CreepUnitType()
+
+        elif w in range(146, 150) and h in range(10, 12):  # fort
+            unit.type = framework_objects.TowerUnitType()
+
+        elif w in range(123, 125) and h in range(11, 13):  # hero
+            unit.type = framework_objects.HeroUnitType()
+
+        elif w in range(134, 136) and h in range(6, 8):  # gates
+            unit.type = framework_objects.GatesUnitType()
+
+        else:  # кто то не понятный и явно не подходящий для атаки
+            continue
+
+        if unit not in result:
+            result.append(unit)
+            # cv2.drawContours(screenshot, [contour], -1, (0, 255, 0), 1)
 
     # cv2.namedWindow('img')
     # cv2.imshow('img', screenshot)

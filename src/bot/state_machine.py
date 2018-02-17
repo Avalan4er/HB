@@ -1,13 +1,16 @@
-from transitions import Machine, State, MachineError
-import windows_helpers
-import time
 import logging
-import hots
-import config
 import random
 import threading
-import match_result_helpers
+import time
 from datetime import datetime
+
+from transitions import Machine, State
+
+import config
+import framework_objects
+import hots
+import match_result_helpers
+import windows_helpers
 
 
 class Application(object):
@@ -290,12 +293,13 @@ class Player(object):
         # пока движемся - ищем крипов
         movement_start_time = datetime.now().timestamp()
         while datetime.now().timestamp() - movement_start_time < movement_length:
-            creep = self.game_screen.detect_enemy_creep()
+            enemy_units = filter(lambda unit: unit.is_enemy, self.game_screen.get_units())
+            enemy_unit = self.game_screen.find_nearest_enemy(enemy_units)
 
-            if creep is not None:
+            if enemy_unit is not None:
                 logging.debug('Цель обнаружена. Перехожу к атаке')
                 self.game_screen.stop()
-                self.attack(creep)
+                self.attack(enemy_unit)
                 return None
 
             time.sleep(1)
@@ -308,8 +312,7 @@ class Player(object):
         time.sleep(3)
         self.move()  # движемся дальше
 
-
-    def state_attacking_on_enter(self, creep):
+    def state_attacking_on_enter(self, creep: framework_objects.Unit):
         if self.game_screen.detect_death():
             self.die()
             return None
@@ -342,9 +345,10 @@ class Player(object):
                 self.current_hp = health
                 self.game_screen.backpedal(self.side)
 
-        next_creep = self.game_screen.detect_enemy_creep()
-        if next_creep is not None:
-            self.attack(next_creep)
+        enemy_units = filter(lambda unit: unit.is_enemy, self.game_screen.get_units())
+        next_unit = self.game_screen.find_nearest_enemy(enemy_units)
+        if next_unit is not None:
+            self.attack(next_unit)
         else:
             logging.debug('Целей больше нет. Двигаюсь дальше')
             self.move()

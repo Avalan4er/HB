@@ -1,15 +1,18 @@
-import pyautogui
-import subprocess
-import os
-import time
-import config
-import random
-import psutil
 import logging
-import vision_helpers
-import constants
 import math
+import os
+import random
+import subprocess
+import time
+
+import psutil
+import pyautogui
 from PIL import Image
+
+import config
+import constants
+import framework_objects
+import vision_helpers
 
 
 class Color(object):
@@ -100,8 +103,8 @@ def is_hots_running():
     return False
 
 
-def distance(p1: (int, int), p2: (int, int)) -> float:
-    return math.sqrt(((p1[0] - p2[0]) ** 2) + ((p1[1] - p2[1]) ** 2))
+def distance(p1: framework_objects.Point, p2: framework_objects.Point) -> float:
+    return math.sqrt(((p1.x - p2.x) ** 2) + ((p1.y - p2.y) ** 2))
 
 
 def run_hots():

@@ -1,12 +1,15 @@
 import logging
-import time
-import windows_helpers
-import pyperclip
-import constants
-import vision_helpers
 import os
-import math
 import random
+import time
+from typing import Union
+
+import pyperclip
+
+import constants
+import framework_objects
+import vision_helpers
+import windows_helpers
 
 
 class MainMenu(object):
@@ -138,22 +141,25 @@ class GameScreen(object):
         while not self.pixel.matches(395, 1000, (62, 172, 23), 1):
             time.sleep(0.5)
 
-    def detect_enemy_creep(self):
+    def get_units(self) -> [framework_objects.Unit]:
         screenshot = self.pixel.screen()
-        creep_coords = None
+        return list(vision_helpers.detect_units(screenshot))
 
-        enemy_creeps = list(vision_helpers.find_all_enemy_creeps(screenshot))
-        if enemy_creeps is not None and len(enemy_creeps) > 0:
-            player_coords = (1920 / 2, 500)
-            creeps = sorted(
-                enemy_creeps,
-                key=lambda creep: windows_helpers.distance((player_coords[0], player_coords[1]), (creep[0], creep[1])))
-            creep_coords = creeps[0]
+    def find_nearest_enemy(self, enemy_units: [framework_objects.Unit]) -> Union[None, framework_objects.Unit]:
+        if enemy_units is not list:
+            enemy_units = list(enemy_units)
 
-        if creep_coords is not None:
-            return EnemyCreep(creep_coords[0], creep_coords[1])
+        if len(enemy_units) <= 0:
+            return None
 
-    def detect_death(self):
+        player_position = framework_objects.Point(1920 / 2, 500)
+
+        sorted_enemy_units = sorted(
+            enemy_units,
+            key=lambda unit: windows_helpers.distance(player_position, unit.position))
+        return sorted_enemy_units[0]
+
+    def detect_death(self) -> bool:
         logging.debug('Определяю умер ли персонаж')
 
         screenshot = self.pixel.screen().crop((920, 770, 1000, 840))
@@ -170,8 +176,9 @@ class GameScreen(object):
         self.emulator.right_click(int(1920 / 2) + random.randint(-10, 10), int(1080 / 2) + random.randint(-10, 10))
         self.emulator.hotkey('space')
 
-    def attack(self, creep):
-        self.emulator.mouse_move(creep.x + random.randint(-5, 5), creep.y + 50 + random.randint(-5, 5))
+    def attack(self, unit: framework_objects.Unit):
+        self.emulator.mouse_move(unit.position.x + random.randint(-5, 5),
+                                 unit.position.y + unit.type.height + random.randint(-5, 5))
         self.emulator.press_key('a')
 
     def stop(self):

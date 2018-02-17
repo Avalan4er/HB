@@ -64,5 +64,5 @@ if __name__ == '__main__':
     # from PIL import Image
 
     # screenshot = Image.open('')
-    # coords = list(vision_helpers.find_all_enemy_creeps(screenshot))
+    # coords = list(vision_helpers.detect_units(screenshot))
     # print('t')

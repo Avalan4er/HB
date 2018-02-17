@@ -1,7 +1,7 @@
 import os
 import sys
-import logging
-from objects import Map, MapStop
+
+from config_objects import Map, MapStop
 
 WAIT_BEFORE_GAME_STARTS = 60
 
@@ -11,7 +11,7 @@ try:
     # PyInstaller creates a temp folder and stores path in _MEIPASS
     base_path = sys._MEIPASS
 except Exception:
-    base_path = os.path.abspath(".")
+    base_path = ''
 
 IMAGES_PATH = os.path.join(base_path, 'resources', 'img')
 LOADING_SCREEN_TEMPLATES_PATH = os.path.join(IMAGES_PATH, 'loading_screen')
