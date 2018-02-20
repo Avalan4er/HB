@@ -62,15 +62,16 @@ class MainMenu(object):
         logging.debug('Ожидаю начала матча')
         loading_started = False
         loading_finished = False
+        time.sleep(4)
 
         while not loading_started:
             time.sleep(0.5)
-            loading_started = self.pixel.matches(900, 500, (10, 10, 10), 10)
+            loading_started = self.pixel.matches(1600, 500, (10, 10, 10), 10)
             logging.debug('Экран потемнел - ' + loading_started.__str__())
 
             while loading_started and not loading_finished:
                 time.sleep(0.5)
-                loading_finished = not self.pixel.matches(900, 500, (10, 10, 10), 20)
+                loading_finished = not self.pixel.matches(1600, 500, (10, 10, 10), 20)
                 logging.debug('Загрузочный экран появился - ' + loading_finished.__str__())
 
         time.sleep(0.5)
