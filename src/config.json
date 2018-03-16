@@ -1,11 +1,11 @@
 {
     "BATTLE_NET_EXE_PATH": "C:\\Games\\Heroes of the Storm\\Heroes of the Storm.exe",
-    "HERO_TO_LEVEL": "Соня",
+	"HERO_TO_LEVEL": "медив",
     "AI_LEVEL": "Easy",
     "SEND_EMAIL_ON_MATCH_END": false,
-	"EMAIL": "test",
+	"EMAIL": "test@test.ru",
 	"SMTP_SERVER_ADDRESS": "smtp.yandex.ru",
 	"SMTP_SERVER_PORT": 587,
-	"SMTP_LOGIN": "test@yandex.ru",
+	"SMTP_LOGIN": "test@test.ru",
 	"SMTP_PASSWORD": "test"
 }

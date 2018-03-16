@@ -59,22 +59,18 @@ class MainMenu(object):
         self.emulator.click(1000, 1030)
 
     def wait_for_match(self):
+        blue_color = (8, 88, 229)
         logging.debug('Ожидаю начала матча')
-        loading_started = False
-        loading_finished = False
-        time.sleep(4)
 
-        while not loading_started:
-            time.sleep(0.5)
-            loading_started = self.pixel.matches(1600, 500, (10, 10, 10), 10)
-            logging.debug('Экран потемнел - ' + loading_started.__str__())
+        while True:
+            screenshot = self.pixel.screen()
+            left_pixel = screenshot.getpixel((3, 285))
+            right_pixel = screenshot.getpixel((1917, 285))
 
-            while loading_started and not loading_finished:
-                time.sleep(0.5)
-                loading_finished = not self.pixel.matches(1600, 500, (10, 10, 10), 20)
-                logging.debug('Загрузочный экран появился - ' + loading_finished.__str__())
+            if vision_helpers.is_color_in_range(left_pixel, blue_color, 10) or vision_helpers.is_color_in_range(
+                    right_pixel, blue_color, 10):
+                break
 
-        time.sleep(0.5)
         logging.debug('Матч начался')
 
     def check_if_game_finished(self):

@@ -1,14 +1,15 @@
-from typing import Union
-from PIL import Image
-from config import Configuration
-from datetime import datetime
+import logging
 import os
 import smtplib
-import logging
-import sys
+from datetime import datetime
+from email.mime.image import MIMEImage
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from email.mime.image import MIMEImage
+from typing import Union
+
+from PIL import Image
+
+from config import Configuration
 
 
 def save_match_result(screenshot: Image) -> Union[None, str]:
@@ -64,7 +65,6 @@ def send_match_result(screenshot_path: str):
 
         # Send the message via local SMTP server.
         s = smtplib.SMTP(Configuration.SMTP_SERVER_ADDRESS, Configuration.SMTP_SERVER_PORT)
-        s.set_debuglevel(1)
         s.ehlo()
         s.starttls()
         s.ehlo()

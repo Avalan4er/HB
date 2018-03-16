@@ -1,17 +1,32 @@
 import logging
+import os
 import random
 import sys
+from datetime import datetime
 
 import config
 import constants
 import state_machine
 
 
-def setup_environment():
+def configure_environment():
     sys.path.insert(0, '/bot')
     sys.path.insert(0, '/configuration')
     sys.path.insert(0, '/framework')
 
+
+def configure_logger():
+    logs_dir = 'logs'
+    if not os.path.exists(logs_dir):
+        os.makedirs(logs_dir)
+
+    log_file_name = config.Configuration.HERO_TO_LEVEL + '_' + datetime.now().strftime("%Y-%m-%d_%H-%M-%S") + '.log'
+    log_path = os.path.join(logs_dir, log_file_name)
+
+    logging.basicConfig(filename=log_path, level=logging.DEBUG, format='%(asctime)s.%(msecs)03d: %(message)s',
+                        datefmt='%H:%M:%S')
+    # logging.basicConfig(level=logging.DEBUG, format='%(asctime)s.%(msecs)03d: %(message)s', datefmt='%H:%M:%S')
+    # logging.disable(logging.DEBUG) # uncomment to block debug log messages
 
 def main():
     application = state_machine.Application()
@@ -19,10 +34,10 @@ def main():
 
 
 if __name__ == '__main__':
-    logging.basicConfig(level=logging.DEBUG, format='%(asctime)s.%(msecs)03d: %(message)s', datefmt='%H:%M:%S')
-    # logging.disable(logging.DEBUG) # uncomment to block debug log messages
+    configure_logger()
+    configure_environment()
+
     random.seed(12331551)
-    setup_environment()
     config.read()
 
     logging.debug('Базовая директория ресурсов: ' + constants.base_path)
