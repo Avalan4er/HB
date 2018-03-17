@@ -20,12 +20,11 @@ def configure_logger():
     if not os.path.exists(logs_dir):
         os.makedirs(logs_dir)
 
-    log_file_name = config.Configuration.HERO_TO_LEVEL + '_' + datetime.now().strftime("%Y-%m-%d_%H-%M-%S") + '.log'
+    log_file_name = datetime.now().strftime("%Y-%m-%d_%H-%M-%S") + '.log'
     log_path = os.path.join(logs_dir, log_file_name)
 
-    logging.basicConfig(filename=log_path, level=logging.DEBUG, format='%(asctime)s.%(msecs)03d: %(message)s',
-                        datefmt='%H:%M:%S')
-    # logging.basicConfig(level=logging.DEBUG, format='%(asctime)s.%(msecs)03d: %(message)s', datefmt='%H:%M:%S')
+    # logging.basicConfig(filename=log_path, level=logging.DEBUG, format='%(asctime)s.%(msecs)03d: %(message)s', datefmt='%H:%M:%S')
+    logging.basicConfig(level=logging.DEBUG, format='%(asctime)s.%(msecs)03d: %(message)s', datefmt='%H:%M:%S')
     # logging.disable(logging.DEBUG) # uncomment to block debug log messages
 
 def main():

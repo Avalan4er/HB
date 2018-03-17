@@ -135,7 +135,7 @@ class GameScreen(object):
         self.emulator = windows_helpers.Emulator()
 
     def wait_match_timer_start(self):
-        while not self.pixel.matches(395, 1000, (62, 172, 23), 1):
+        while not self.pixel.matches(395, 1000, (62, 172, 23), 20):
             time.sleep(0.5)
 
     def get_units(self) -> [framework_objects.Unit]:
