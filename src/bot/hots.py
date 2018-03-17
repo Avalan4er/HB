@@ -1,4 +1,3 @@
-import logging
 import os
 import random
 import time
@@ -10,6 +9,7 @@ import constants
 import framework_objects
 import vision_helpers
 import windows_helpers
+from logger import logger
 
 
 class MainMenu(object):
@@ -18,19 +18,19 @@ class MainMenu(object):
         self.pixel = windows_helpers.Pixel()
 
     def open_play_panel(self):
-        logging.debug('Открываю вкладку ИГРАТЬ')
+        logger.debug('Открываю вкладку ИГРАТЬ')
         self.emulator.click(125, 33)
 
     def open_vs_ai_panel(self):
-        logging.debug('Открываю панель Против ИИ')
+        logger.debug('Открываю панель Против ИИ')
         self.emulator.click(61, 97)
 
     def open_heroes_selection(self):
-        logging.debug('Открываю панель выбора героя')
+        logger.debug('Открываю панель выбора героя')
         self.emulator.click(950, 200)
 
     def select_hero(self, hero_name):
-        logging.debug('Выбираю героя ' + hero_name)
+        logger.debug('Выбираю героя ' + hero_name)
         self.emulator.click(950, 500)  # клик по герою для открытия меню выбора героя
         self.emulator.click(1420, 165)  # клик по полю ввода поиска героя
 
@@ -42,7 +42,7 @@ class MainMenu(object):
         self.emulator.click(337, 267)  # кликаем по первому из найденных героев
 
     def select_ai_level(self, level):
-        logging.debug('Устанавливаю сложность ботов' + level)
+        logger.debug('Устанавливаю сложность ботов' + level)
         levels = {'Easy': [81, 719],
                   'Medium': [245, 719],
                   'Hard': [435, 719]}
@@ -51,16 +51,16 @@ class MainMenu(object):
         self.emulator.click(level_coordinates[0], level_coordinates[1])
 
     def select_alies_ai_mode(self):
-        logging.debug('Устанавливаю режим игры - Союзники-ИИ')
+        logger.debug('Устанавливаю режим игры - Союзники-ИИ')
         self.emulator.click(185, 817)
 
     def start_game(self):
-        logging.debug('Начинаем игру')
+        logger.debug('Начинаем игру')
         self.emulator.click(1000, 1030)
 
     def wait_for_match(self):
         blue_color = (8, 88, 229)
-        logging.debug('Ожидаю начала матча')
+        logger.debug('Ожидаю начала матча')
 
         while True:
             screenshot = self.pixel.screen()
@@ -71,7 +71,7 @@ class MainMenu(object):
                     right_pixel, blue_color, 10):
                 break
 
-        logging.debug('Матч начался')
+        logger.debug('Матч начался')
 
     def check_if_game_finished(self):
         screenshot = self.pixel.screen().crop((230, 145, 562, 232))
@@ -94,7 +94,7 @@ class LoadingScreen(object):
         self.pixel = windows_helpers.Pixel()
 
     def detect_map(self):
-        logging.debug('Определяю карту')
+        logger.debug('Определяю карту')
 
         screenshot = self.pixel.screen()
         width = screenshot.width
@@ -104,28 +104,28 @@ class LoadingScreen(object):
                     screenshot.crop((0, 0, width, 300)),
                     os.path.join(constants.LOADING_SCREEN_TEMPLATES_PATH,
                                  hots_map.loading_screen_template_name + '.png')):
-                logging.debug('Карта обнаружена: ' + hots_map.name)
+                logger.debug('Карта обнаружена: ' + hots_map.name)
                 return hots_map
 
-            logging.debug('Это не ' + hots_map.name)
+            logger.debug('Это не ' + hots_map.name)
 
-        logging.debug('Карта не определена')
+        logger.debug('Карта не определена')
 
     def wait_for_loading(self):
-        logging.debug('Ждем окончания загрузки')
+        logger.debug('Ждем окончания загрузки')
         initial_pixel_color = self.pixel.color(900, 500)
         while initial_pixel_color == self.pixel.color(900, 500):
             time.sleep(1)
-        logging.debug('Загрузка окончена')
+        logger.debug('Загрузка окончена')
 
     def detect_side(self):
-        logging.debug('Определяю сторону')
+        logger.debug('Определяю сторону')
 
         side = 'right_side'
         if self.pixel.matches(3, 285, (8, 88, 229), 10):
             side = 'left_side'
 
-        logging.debug('Сторона определена: ' + side)
+        logger.debug('Сторона определена: ' + side)
         return side
 
 
@@ -157,13 +157,13 @@ class GameScreen(object):
         return sorted_enemy_units[0]
 
     def detect_death(self) -> bool:
-        logging.debug('Определяю умер ли персонаж')
+        logger.debug('Определяю умер ли персонаж')
 
         screenshot = self.pixel.screen().crop((920, 770, 1000, 840))
         if vision_helpers.screenshot_contains_template(
                 screenshot,
                 os.path.join(constants.IMAGES_PATH, 'template_death.png')):
-            logging.debug('Персонаж мертв')
+            logger.debug('Персонаж мертв')
             return True
 
         return False
@@ -179,17 +179,17 @@ class GameScreen(object):
         self.emulator.press_key('a')
 
     def stop(self):
-        logging.debug('Останавливаемся')
+        logger.debug('Останавливаемся')
         self.emulator.press_key('s')
 
     def use_random_ability(self):
         abiltity = constants.ABILITY_KEYS[random.randint(0, 2)]
-        logging.debug('Использую суперспособность ' + abiltity)
+        logger.debug('Использую суперспособность ' + abiltity)
         self.emulator.use_ability(abiltity)
 
     def learn_random_talent(self):
         talent_number = random.randint(1, 4)
-        logging.debug('Учу талант № ' + talent_number.__str__())
+        logger.debug('Учу талант № ' + talent_number.__str__())
         self.emulator.select_talent(talent_number)
 
     def backpedal(self, game_side):
@@ -226,7 +226,7 @@ class MapScreen(object):
         self.map = game_map
         self.towers = game_map.stops
         if game_side == 'right_side':
-            logging.debug('Играем за правых, реверсим башни')
+            logger.debug('Играем за правых, реверсим башни')
             self.towers = list(reversed(game_map.stops))
 
         towers_count = len(self.towers)

@@ -1,4 +1,3 @@
-import logging
 import os
 import smtplib
 from datetime import datetime
@@ -10,6 +9,7 @@ from typing import Union
 from PIL import Image
 
 from config import Configuration
+from logger import logger
 
 
 def save_match_result(screenshot: Image) -> Union[None, str]:
@@ -20,14 +20,14 @@ def save_match_result(screenshot: Image) -> Union[None, str]:
     file_name = Configuration.HERO_TO_LEVEL + '_' + datetime.now().strftime("%Y-%m-%d_%H-%M-%S") + '.png'
     file_path = os.path.join(results_storage, file_name)
 
-    logging.debug('Сохраняем результаты матча: ' + file_path)
+    logger.debug('Сохраняем результаты матча: ' + file_path)
     try:
         screenshot.save(file_path)
     except OSError as error:
-        logging.debug('Ошибка сохранения результатов матча: ' + error.__str__())
+        logger.debug('Ошибка сохранения результатов матча: ' + error.__str__())
         return None
     except:
-        logging.debug('Неизвестная ошибка сохранения результатов матча')
+        logger.debug('Неизвестная ошибка сохранения результатов матча')
         return None
 
     return file_path
@@ -53,7 +53,7 @@ def send_match_result(screenshot_path: str):
     # Record the MIME types.
     msgHtml = MIMEText(html, 'html')
 
-    logging.debug('Отправляем Email уведомление с результатами матча')
+    logger.debug('Отправляем Email уведомление с результатами матча')
     try:
         img = open(screenshot_path, 'rb').read()
         msgImg = MIMEImage(img, 'png')
@@ -74,9 +74,9 @@ def send_match_result(screenshot_path: str):
         # s.sendmail(options.sender, options.recipient, msgRoot.as_string())
         s.sendmail(sender, recipient, msgRoot.as_string())
         s.quit()
-        logging.debug('Email отправлен')
+        logger.debug('Email отправлен')
 
     except (AttributeError, OSError) as error:
-        logging.error('Ошибка отправки Email: ' + error.__str__())
+        logger.error('Ошибка отправки Email: ' + error.__str__())
     except:
-        logging.error('Неизвестная ошибка отправки Email')
+        logger.error('Неизвестная ошибка отправки Email')

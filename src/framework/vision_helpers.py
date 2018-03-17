@@ -1,10 +1,9 @@
-import logging
-
 import cv2
 import numpy
 from PIL import Image
 
 import framework_objects
+from logger import logger
 
 
 def is_color_in_range(color, range_center, range_width=3) -> bool:
@@ -29,7 +28,7 @@ def get_health(screenshot: Image) -> float:
 
     for contour in contours:
         x, y, w, h = cv2.boundingRect(contour)
-        if 17 < h < 23:
+        if 17 < h < 40:
             return (w / 208) * 100
 
     return 0
@@ -131,11 +130,11 @@ def map_get_player_coords(screenshot: Image):
 def screenshot_find_templates(screenshot: Image, template_path: str):
     image = cv2.cvtColor(numpy.array(screenshot), cv2.COLOR_RGB2GRAY)
     if image is None:
-        logging.error('Что то пошло катастрофически не так. Изображения в котором ищется шаблон не создалось')
+        logger.error('Что то пошло катастрофически не так. Изображения в котором ищется шаблон не создалось')
 
     template = cv2.imread(template_path, 0)
     if template is None:
-        logging.error('Ошбика чтения файла шаблона ' + template_path)
+        logger.error('Ошбика чтения файла шаблона ' + template_path)
 
     res = cv2.matchTemplate(image, template, cv2.TM_CCOEFF_NORMED)
     ts = 0.9

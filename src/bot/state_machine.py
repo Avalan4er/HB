@@ -1,4 +1,3 @@
-import logging
 import random
 import threading
 import time
@@ -11,6 +10,7 @@ import framework_objects
 import hots
 import match_result_helpers
 import windows_helpers
+from logger import logger
 
 
 class Application(object):
@@ -28,7 +28,7 @@ class Application(object):
                                initial='not_running', queued=True)
 
     def state_running_on_enter(self):
-        logging.debug('Запускаю HOTS')
+        logger.debug('Запускаю HOTS')
         windows_helpers.run_hots()
 
         game = Game()
@@ -98,14 +98,14 @@ class Game(object):
         self.wait_for_match()
 
     def state_loading_on_enter(self):
-        logging.debug('Грузимся в игру')
+        logger.debug('Грузимся в игру')
         self.game_map = self.hots_loading_screen.detect_map()
         self.game_side = self.hots_loading_screen.detect_side()
         self.hots_loading_screen.wait_for_loading()
         self.initiate()
 
     def state_initiating_game_on_enter(self):
-        logging.debug('Матч начался!')
+        logger.debug('Матч начался!')
         self.play()
 
     def state_playing_on_enter(self):
@@ -121,7 +121,7 @@ class Game(object):
         while not self.hots_menu.check_if_game_finished():
             time.sleep(5)
 
-        logging.debug('Игра завершена')
+        logger.debug('Игра завершена')
 
         player.finish()  # finish playing
         self.finish()
@@ -130,17 +130,17 @@ class Game(object):
         self.checking_afk_screen = False
         time.sleep(5)
         #  skip mvp screen
-        logging.debug('Пропускаю окно mvp')
+        logger.debug('Пропускаю окно mvp')
         self.hots_menu.press_skip_button()
         time.sleep(5)
 
         # skip stats screen
-        logging.debug('Пропускаю окно статистики')
+        logger.debug('Пропускаю окно статистики')
         self.hots_menu.press_skip_button()
         time.sleep(5)
 
         # wait for loading
-        logging.debug('Жду загрузки')
+        logger.debug('Жду загрузки')
         self.hots_loading_screen.wait_for_loading()
         time.sleep(5)
 
@@ -153,11 +153,11 @@ class Game(object):
             match_result_helpers.send_match_result(screenshot_path)
 
         # skip experience screen
-        logging.debug('Пропускаю окно начисления опыта')
+        logger.debug('Пропускаю окно начисления опыта')
         self.hots_menu.press_skip_button()
         time.sleep(5)
 
-        logging.debug('Начинаю новую игру')
+        logger.debug('Начинаю новую игру')
         self.start_new()
 
 
@@ -218,23 +218,23 @@ class Player(object):
         self.machine = Machine(model=self, states=states, transitions=transitions, initial='idle', queued=True)
 
     def state_thinking_on_enter(self):
-        logging.debug('Ожидаю начала отсчета времени')
+        logger.debug('Ожидаю начала отсчета времени')
         self.idle = False
 
         # wait until match timer starts
         self.game_screen.wait_match_timer_start()
 
-        logging.debug('Иду ко второй башне')
+        logger.debug('Иду ко второй башне')
         # move to second tower
         second_tower = self.map_screen.towers[1]
         self.game_screen.move_to(second_tower.x, second_tower.y)
         self.current_tower = 1
 
-        logging.debug('Жду начала матча')
+        logger.debug('Жду начала матча')
         # wait until match begins
         time.sleep(config.Configuration.MATCH_COUNTDOWN)
 
-        logging.debug('Иду воевать!')
+        logger.debug('Иду воевать!')
         self.move()
 
     def state_moving_on_enter(self):
@@ -254,20 +254,20 @@ class Player(object):
         # определение цели движения
         if current_tower_index < frontline_tower_index:  # если мы еще не на фронте
             destination_tower_index = frontline_tower_index
-            logging.debug('Движение к фронтовой башне')
+            logger.debug('Движение к фронтовой башне')
         elif self.game_screen.get_health() < self.current_hp:  # нас бьют
             destination_tower_index = frontline_tower_index
             self.current_hp = self.game_screen.get_health()
-            logging.debug('Нас бьют, значит мы идем к своей башне')
+            logger.debug('Нас бьют, значит мы идем к своей башне')
         else:  # если уже на фронте или дальше
             next_tower_index = current_tower_index + 1
             if self.map_screen.check_enemy_tower_alive(screenshot, next_tower_index):  # если следующий вражеский тавер жив
                 movement_length = config.Configuration.MOVEMENT_SHORT # будем двигаться не доходя до башни
                 destination_tower_index = next_tower_index
-                logging.debug('Двигаемся на пару шагов вперед к живой башне врага')
+                logger.debug('Двигаемся на пару шагов вперед к живой башне врага')
             else:  # в противном случае делаем полный переход
                 destination_tower_index = next_tower_index
-                logging.debug('Двигаемся к мертвой башне врага')
+                logger.debug('Двигаемся к мертвой башне врага')
 
         if destination_tower_index >= len(self.map_screen.towers):
             destination_tower_index = len(self.map_screen.towers) - 1
@@ -284,10 +284,10 @@ class Player(object):
 
         # начинаем движение
         self.game_screen.move_to(destination_tower.x + h_offset, destination_tower.y)
-        logging.debug('Двигаюсь к башне №' + destination_tower_index.__str__())
+        logger.debug('Двигаюсь к башне №' + destination_tower_index.__str__())
 
         if random.randint(0, 4) == 3:
-            logging.debug('Кости сложились удачно')
+            logger.debug('Кости сложились удачно')
             self.game_screen.learn_random_talent()
 
         # пока движемся - ищем крипов
@@ -297,14 +297,14 @@ class Player(object):
             enemy_unit = self.game_screen.find_nearest_enemy(enemy_units)
 
             if enemy_unit is not None:
-                logging.debug('Цель обнаружена. Перехожу к атаке')
+                logger.debug('Цель обнаружена. Перехожу к атаке')
                 self.game_screen.stop()
                 self.attack(enemy_unit)
                 return None
 
             time.sleep(1)
 
-        logging.debug('Движение закончено, целей не обнаружено')
+        logger.debug('Движение закончено, целей не обнаружено')
         if movement_length == config.Configuration.MOVEMENT_LONG:  # если дошли до следущей башни
             self.current_tower = destination_tower_index  # то повышаем индекс
 
@@ -322,11 +322,11 @@ class Player(object):
             return None
 
         self.current_hp = self.game_screen.get_health()
-        logging.debug('Атакую противника')
+        logger.debug('Атакую противника')
         self.game_screen.attack(creep)
 
         if random.randint(0, 1) == 1:
-            logging.debug('Кости сложились удачно')
+            logger.debug('Кости сложились удачно')
             self.game_screen.use_random_ability()
             time.sleep(0.5)
 
@@ -335,12 +335,12 @@ class Player(object):
             health = self.game_screen.get_health()
             delta_health = self.current_hp - health
             if delta_health > 10:
-                logging.debug('Нас больно бьют, ретируемся')
+                logger.debug('Нас больно бьют, ретируемся')
                 self.current_hp = health
                 self.game_screen.run_away(self.map_screen.towers[0])
                 break
             elif delta_health > 3:
-                logging.debug('Нас бьют, но не сильно. Бэкпедалим')
+                logger.debug('Нас бьют, но не сильно. Бэкпедалим')
                 self.current_hp = health
                 self.game_screen.backpedal(self.side)
 
@@ -349,23 +349,23 @@ class Player(object):
         if next_unit is not None:
             self.attack(next_unit)
         else:
-            logging.debug('Целей больше нет. Двигаюсь дальше')
+            logger.debug('Целей больше нет. Двигаюсь дальше')
             self.move()
 
     def state_dead_on_enter(self):
-        logging.debug('Персонаж умер')
+        logger.debug('Персонаж умер')
         self.current_tower = 0
 
         while self.game_screen.detect_death():
              time.sleep(1)
 
         time.sleep(2)
-        logging.debug('Персонаж воскрес')
+        logger.debug('Персонаж воскрес')
         self.current_hp = self.game_screen.get_health()
         self.move()
 
     def state_resting_on_enter(self):
-        logging.debug('Мало здоровья, возвращаюсь на базу')
+        logger.debug('Мало здоровья, возвращаюсь на базу')
         self.game_screen.backpedal(self.side)
         self.game_screen.backpedal(self.side)
 

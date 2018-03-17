@@ -1,12 +1,10 @@
-import logging
-import os
 import random
 import sys
-from datetime import datetime
 
 import config
 import constants
 import state_machine
+from logger import logger
 
 
 def configure_environment():
@@ -15,36 +13,24 @@ def configure_environment():
     sys.path.insert(0, '/framework')
 
 
-def configure_logger():
-    logs_dir = 'logs'
-    if not os.path.exists(logs_dir):
-        os.makedirs(logs_dir)
-
-    log_file_name = datetime.now().strftime("%Y-%m-%d_%H-%M-%S") + '.log'
-    log_path = os.path.join(logs_dir, log_file_name)
-
-    # logging.basicConfig(filename=log_path, level=logging.DEBUG, format='%(asctime)s.%(msecs)03d: %(message)s', datefmt='%H:%M:%S')
-    logging.basicConfig(level=logging.DEBUG, format='%(asctime)s.%(msecs)03d: %(message)s', datefmt='%H:%M:%S')
-    # logging.disable(logging.DEBUG) # uncomment to block debug log messages
-
 def main():
     application = state_machine.Application()
     application.run()
 
 
 if __name__ == '__main__':
-    configure_logger()
     configure_environment()
 
     random.seed(12331551)
     config.read()
 
-    logging.debug('Базовая директория ресурсов: ' + constants.base_path)
-    logging.debug('Путь до HOTS: ' + config.Configuration.BATTLE_NET_EXE_PATH)
-    logging.debug('Уровень ИИ: ' + config.Configuration.AI_LEVEL)
-    logging.debug('Прокачиваемый герой: ' + config.Configuration.HERO_TO_LEVEL)
+    logger.debug('Базовая директория ресурсов: ' + constants.base_path)
+    logger.debug('Путь до HOTS: ' + config.Configuration.BATTLE_NET_EXE_PATH)
+    logger.debug('Уровень ИИ: ' + config.Configuration.AI_LEVEL)
+    logger.debug('Прокачиваемый герой: ' + config.Configuration.HERO_TO_LEVEL)
 
     main()
+
 
 
 
@@ -77,6 +63,6 @@ if __name__ == '__main__':
     # import vision_helpers
     # from PIL import Image
 
-    # screenshot = Image.open('')
-    # coords = list(vision_helpers.detect_units(screenshot))
+    # screenshot = Image.open('testimage.png')
+    # coords = vision_helpers.get_health(screenshot)
     # print('t')

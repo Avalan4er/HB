@@ -24,7 +24,8 @@ a = Analysis([
                 'framework\\framework_objects.py',
                 'framework\\match_result_helpers.py',
                 'framework\\vision_helpers.py',
-                'framework\\windows_helpers.py'
+                'framework\\windows_helpers.py',
+                'framework\\logger.py',
             ],
              pathex=[
                  PROJECT_PATH,

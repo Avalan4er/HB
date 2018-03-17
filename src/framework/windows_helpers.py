@@ -1,4 +1,3 @@
-import logging
 import math
 import os
 import random
@@ -13,6 +12,7 @@ import config
 import constants
 import framework_objects
 import vision_helpers
+from logger import logger
 
 
 class Color(object):
@@ -112,14 +112,14 @@ def run_hots():
     Запускает Heroes of the storm
     """
     if is_hots_running():
-        logging.debug('HOTS уже запущен. Переключаюсь на него')
+        logger.debug('HOTS уже запущен. Переключаюсь на него')
         hots_window = pyautogui.getWindow('Heroes of the Storm')
         hots_window.minimize()
         hots_window.restore()
         time.sleep(1)
 
     else:
-        logging.debug('Запускаем HOTS')
+        logger.debug('Запускаем HOTS')
         # Start Battle.Net client
         subprocess.call([config.Configuration.BATTLE_NET_EXE_PATH])
         time.sleep(5)
@@ -142,5 +142,5 @@ def run_hots():
             raise Exception('Could not find game on screen. Is the game visible?')
         Emulator().click(btn_locations[0].x, btn_locations[0].y)
 
-        logging.debug('HOTS запускается, жду ' + constants.WAIT_BEFORE_GAME_STARTS.__str__() + ' секунд')
+        logger.debug('HOTS запускается, жду ' + constants.WAIT_BEFORE_GAME_STARTS.__str__() + ' секунд')
         time.sleep(constants.WAIT_BEFORE_GAME_STARTS)
