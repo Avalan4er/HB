@@ -315,7 +315,7 @@ class Player(object):
     def state_attacking_on_enter(self, creep: framework_objects.Unit):
         if self.game_screen.detect_death():
             self.die()
-            return Noneaq
+            return None
 
         if self.game_screen.get_health() < 30:
             self.rest()
