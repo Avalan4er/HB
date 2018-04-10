@@ -64,5 +64,5 @@ if __name__ == '__main__':
     # from PIL import Image
 
     # screenshot = Image.open('testimage.png')
-    # coords = vision_helpers.get_health(screenshot)
+    # coords = vision_helpers.detect_units(screenshot)
     # print('t')

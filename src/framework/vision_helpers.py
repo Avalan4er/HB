@@ -48,7 +48,7 @@ def detect_units(screenshot: Image):
     image = cv2.bitwise_not(image)
 
     # filter health bar color
-    mask_enemy_hero_health = cv2.inRange(image, numpy.array([206, 220, 219]), numpy.array([208, 222, 221]))
+    mask_enemy_hero_health = cv2.inRange(image, numpy.array([100, 115, 125]), numpy.array([130, 145, 155]))
     mask_enemy_creep_health = cv2.inRange(image, numpy.array([255, 255, 255]), numpy.array([255, 255, 255]))
     mask = mask_enemy_creep_health | mask_enemy_hero_health  # build mask
     res = cv2.bitwise_and(image, image, mask=mask)  # apply mask
@@ -59,9 +59,10 @@ def detect_units(screenshot: Image):
     _, contours, hierarchy = cv2.findContours(image_bw, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)  # find contours
 
     enemy_creep_plate_color = numpy.array([55, 0, 187])     # цвет индикатора здоровья врага
+    enemy_hero_plate_color = numpy.array([54, 0, 186])  # цвет индикатора здоровья врага
     result = []
     for contour in contours:
-        if cv2.contourArea(contour) < 30:
+        if cv2.contourArea(contour) < 250:
             continue
 
         x, y, w, h = cv2.boundingRect(contour)
@@ -70,13 +71,16 @@ def detect_units(screenshot: Image):
         if is_color_in_range(screenshot[y + 1, x + 1], enemy_creep_plate_color):
             unit.is_enemy = True
 
+        if is_color_in_range(screenshot[y + 2, x + 2], enemy_hero_plate_color):
+            unit.is_enemy = True
+
         if w in range(53, 55) and h in range(5, 7):  # creep
             unit.type = framework_objects.CreepUnitType()
 
         elif w in range(146, 150) and h in range(10, 12):  # fort
             unit.type = framework_objects.TowerUnitType()
 
-        elif w in range(123, 125) and h in range(11, 13):  # hero
+        elif w in range(120, 130) and h in range(20, 25):  # hero
             unit.type = framework_objects.HeroUnitType()
 
         elif w in range(134, 136) and h in range(6, 8):  # gates

@@ -142,17 +142,25 @@ class GameScreen(object):
         screenshot = self.pixel.screen()
         return list(vision_helpers.detect_units(screenshot))
 
-    def find_nearest_enemy(self, enemy_units: [framework_objects.Unit]) -> Union[None, framework_objects.Unit]:
-        if enemy_units is not list:
-            enemy_units = list(enemy_units)
+    def find_nearest_enemy(self, units: [framework_objects.Unit]) -> Union[None, framework_objects.Unit]:
+        if units is not list:
+            units = list(units)
 
-        if len(enemy_units) <= 0:
+        enemy_units = list(filter(lambda unit: unit.is_enemy, units))
+        enemy_heroes = list(filter(lambda unit: unit.type.name == 'Герой', enemy_units))
+        logger.debug(
+            'Найдено ' + len(enemy_units).__str__() + ' противников. Из них героев: ' + len(enemy_heroes).__str__())
+        if len(enemy_heroes) > 0:
+            units_to_pick = enemy_heroes
+        else:
+            units_to_pick = enemy_units
+
+        if len(units_to_pick) <= 0:
             return None
 
         player_position = framework_objects.Point(1920 / 2, 500)
-
         sorted_enemy_units = sorted(
-            enemy_units,
+            units_to_pick,
             key=lambda unit: windows_helpers.distance(player_position, unit.position))
         return sorted_enemy_units[0]
 

@@ -293,8 +293,8 @@ class Player(object):
         # пока движемся - ищем крипов
         movement_start_time = datetime.now().timestamp()
         while datetime.now().timestamp() - movement_start_time < movement_length:
-            enemy_units = filter(lambda unit: unit.is_enemy, self.game_screen.get_units())
-            enemy_unit = self.game_screen.find_nearest_enemy(enemy_units)
+            units = self.game_screen.get_units()
+            enemy_unit = self.game_screen.find_nearest_enemy(units)
 
             if enemy_unit is not None:
                 logger.debug('Цель обнаружена. Перехожу к атаке')
@@ -315,7 +315,7 @@ class Player(object):
     def state_attacking_on_enter(self, creep: framework_objects.Unit):
         if self.game_screen.detect_death():
             self.die()
-            return None
+            return Noneaq
 
         if self.game_screen.get_health() < 30:
             self.rest()
@@ -344,8 +344,9 @@ class Player(object):
                 self.current_hp = health
                 self.game_screen.backpedal(self.side)
 
-        enemy_units = filter(lambda unit: unit.is_enemy, self.game_screen.get_units())
-        next_unit = self.game_screen.find_nearest_enemy(enemy_units)
+        units = self.game_screen.get_units()
+        next_unit = self.game_screen.find_nearest_enemy(units)
+
         if next_unit is not None:
             self.attack(next_unit)
         else:
