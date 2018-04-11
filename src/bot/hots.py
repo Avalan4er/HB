@@ -9,6 +9,7 @@ import constants
 import framework_objects
 import vision_helpers
 import windows_helpers
+from config import Configuration
 from logger import logger
 
 
@@ -133,6 +134,7 @@ class GameScreen(object):
     def __init__(self):
         self.pixel = windows_helpers.Pixel()
         self.emulator = windows_helpers.Emulator()
+        self.current_talent_idx = 0
 
     def wait_match_timer_start(self):
         while not self.pixel.matches(395, 1000, (62, 172, 23), 20):
@@ -191,13 +193,24 @@ class GameScreen(object):
         self.emulator.press_key('s')
 
     def use_random_ability(self):
-        abiltity = constants.ABILITY_KEYS[random.randint(0, 2)]
+        abilies_count = len(list(Configuration.ABILITIES_TO_SPAM)) - 1
+        abiltity = Configuration.ABILITIES_TO_SPAM[random.randint(0, abilies_count)]
         logger.debug('Использую суперспособность ' + abiltity)
         self.emulator.use_ability(abiltity)
 
-    def learn_random_talent(self):
-        talent_number = random.randint(1, 4)
-        logger.debug('Учу талант № ' + talent_number.__str__())
+    def check_talents_avalible(self, screenshot):
+        pixel_color = screenshot.getpixel((27, 692))
+        match_color = (255, 246, 231)  # (231, 246, 255)
+        if vision_helpers.is_color_in_range(pixel_color, match_color, 5):
+            return True
+
+        return False
+
+    def learn_talent(self):
+        talent_number = Configuration.TALENT_BUILD[self.current_talent_idx]
+        self.current_talent_idx = self.current_talent_idx + 1
+
+        logger.info('Учу талант № ' + talent_number.__str__())
         self.emulator.select_talent(talent_number)
 
     def backpedal(self, game_side):

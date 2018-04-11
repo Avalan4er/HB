@@ -1,6 +1,22 @@
 {
     "BATTLE_NET_EXE_PATH": "C:\\Games\\Heroes of the Storm\\Heroes of the Storm.exe",
 	"HERO_TO_LEVEL": "загара",
+	"TALENT_BUILD": [
+		3,
+		2,
+		1,
+		1,
+		3,
+		3,
+		3
+	],
+	"ABILITIES_TO_SPAM": [
+		"q",
+		"w",
+		"e",
+		"r",
+		"d"
+	],
     "AI_LEVEL": "Easy",
     "SEND_EMAIL_ON_MATCH_END": false,
 	"EMAIL": "test@test.ru",

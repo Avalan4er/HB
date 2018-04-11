@@ -218,23 +218,26 @@ class Player(object):
         self.machine = Machine(model=self, states=states, transitions=transitions, initial='idle', queued=True)
 
     def state_thinking_on_enter(self):
-        logger.debug('Ожидаю начала отсчета времени')
+        logger.info('Ожидаю начала отсчета времени')
         self.idle = False
 
         # wait until match timer starts
         self.game_screen.wait_match_timer_start()
 
-        logger.debug('Иду ко второй башне')
+        logger.info('Иду ко второй башне')
         # move to second tower
         second_tower = self.map_screen.towers[1]
         self.game_screen.move_to(second_tower.x, second_tower.y)
         self.current_tower = 1
 
-        logger.debug('Жду начала матча')
+        # learn initial talent
+        self.game_screen.learn_talent()
+
+        logger.info('Жду начала матча')
         # wait until match begins
         time.sleep(config.Configuration.MATCH_COUNTDOWN)
 
-        logger.debug('Иду воевать!')
+        logger.info('Иду воевать!')
         self.move()
 
     def state_moving_on_enter(self):
@@ -286,9 +289,9 @@ class Player(object):
         self.game_screen.move_to(destination_tower.x + h_offset, destination_tower.y)
         logger.debug('Двигаюсь к башне №' + destination_tower_index.__str__())
 
-        if random.randint(0, 4) == 3:
-            logger.debug('Кости сложились удачно')
-            self.game_screen.learn_random_talent()
+        if self.game_screen.check_talents_avalible(screenshot):
+            logger.info('Доступны новые таланты')
+            self.game_screen.learn_talent()
 
         # пока движемся - ищем крипов
         movement_start_time = datetime.now().timestamp()
@@ -325,10 +328,8 @@ class Player(object):
         logger.debug('Атакую противника')
         self.game_screen.attack(creep)
 
-        if random.randint(0, 1) == 1:
-            logger.debug('Кости сложились удачно')
-            self.game_screen.use_random_ability()
-            time.sleep(0.5)
+        self.game_screen.use_random_ability()
+        time.sleep(0.2)
 
         for i in range(1, random.randint(2, 3)):
             time.sleep(0.5)

@@ -1,12 +1,14 @@
-import os
-import json
 import codecs
+import json
+import os
 
 
 class Configuration(object):
     BATTLE_NET_EXE_PATH = 'C:\Games\Heroes of the Storm\Heroes of the Storm.exe'  # Путь к Battle.net exe
     HERO_TO_LEVEL = "Гэндзи"  # Имя героя на русском
     AI_LEVEL = 'Easy'  # Сложность ботов ( Easy, Medium, Hard )
+    TALENT_BUILD = [1, 2, 3, 1, 2, 3, 4]  # билд талантов
+    ABILITIES_TO_SPAM = ['q', 'w', 'e', 'r', 'd']  # Кнопки способностей которые будут спамиться
 
     MATCH_COUNTDOWN = 35  # 35
 
@@ -47,4 +49,7 @@ def read():
             Configuration.SMTP_LOGIN = config_parser['SMTP_LOGIN']
         if 'SMTP_PASSWORD' in config_parser:
             Configuration.SMTP_PASSWORD = config_parser['SMTP_PASSWORD']
-
+        if 'TALENT_BUILD' in config_parser:
+            Configuration.TALENT_BUILD = config_parser['TALENT_BUILD']
+        if 'ABILITIES_TO_SPAM' in config_parser:
+            Configuration.ABILITIES_TO_SPAM = config_parser['ABILITIES_TO_SPAM']

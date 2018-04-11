@@ -24,10 +24,13 @@ if __name__ == '__main__':
     random.seed(12331551)
     config.read()
 
-    logger.debug('Базовая директория ресурсов: ' + constants.base_path)
-    logger.debug('Путь до HOTS: ' + config.Configuration.BATTLE_NET_EXE_PATH)
-    logger.debug('Уровень ИИ: ' + config.Configuration.AI_LEVEL)
-    logger.debug('Прокачиваемый герой: ' + config.Configuration.HERO_TO_LEVEL)
+    logger.info('Базовая директория ресурсов: ' + constants.base_path)
+    logger.info('Путь до HOTS: ' + config.Configuration.BATTLE_NET_EXE_PATH)
+    logger.info('Уровень ИИ: ' + config.Configuration.AI_LEVEL)
+    logger.info('Прокачиваемый герой: ' + config.Configuration.HERO_TO_LEVEL)
+    logger.info('Билд талантов: ' + config.Configuration.TALENT_BUILD.__str__())
+    logger.info('Способности для спама: ' + config.Configuration.ABILITIES_TO_SPAM.__str__())
+
 
     main()
 
