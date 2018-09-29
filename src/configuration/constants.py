@@ -16,8 +16,14 @@ except Exception:
 IMAGES_PATH = os.path.join(base_path, 'resources', 'img')
 LOADING_SCREEN_TEMPLATES_PATH = os.path.join(IMAGES_PATH, 'loading_screen')
 MAPS = [
+    Map('Alterac',
+        [MapStop(1567, 920), MapStop(1602, 920), MapStop(1650, 916), MapStop(1756, 914), MapStop(1804, 910),
+         MapStop(1840, 905)],
+        'alterac'),
+
     Map('Hanamura',
-        [MapStop(1562, 900), MapStop(1580, 848), MapStop(1637, 829), MapStop(1744, 826), MapStop(1798, 850), MapStop(1818, 900)],
+        [MapStop(15628, 944), MapStop(1588, 906), MapStop(1642, 881), MapStop(1749, 880), MapStop(1802, 917),
+         MapStop(1823, 946)],
         'hanamura'),
 
     Map('TowersOfDoom', [MapStop(1641, 912), MapStop(1751, 912)], 'towers_of_doom'),
